@@ -28,7 +28,6 @@
         android:layout_marginBottom="8dp"
         android:text="@string/dummy_category_name"
         android:textSize="14sp"
-        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/categoryImage"
         app:layout_constraintStart_toStartOf="@id/categoryImage"

@@ -114,19 +114,6 @@ public class MainActivity extends AppCompatActivity {
         ));
 
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false);
-
-        binding.categoriesRecyclerView.setLayoutManager(linearLayoutManager);
-
-        CategoryRecyclerViewAdapter categoryRecyclerViewAdapter =
-                new CategoryRecyclerViewAdapter(categoryList);
-
-        RecyclerViewMargin recyclerViewMargin = new RecyclerViewMargin(5);
-        binding.categoriesRecyclerView.addItemDecoration(recyclerViewMargin);
-
-        binding.categoriesRecyclerView.setAdapter(categoryRecyclerViewAdapter);
-
     }
 
 //    public void setUpBottomNavigation() {

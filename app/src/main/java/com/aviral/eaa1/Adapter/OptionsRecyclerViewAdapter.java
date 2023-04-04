@@ -82,7 +82,7 @@ public class OptionsRecyclerViewAdapter
         private final ImageView optionImage;
         private final TextView optionTitle;
         private final TextView chances;
-        private final AppCompatButton optionButton;
+        private final TextView optionButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
