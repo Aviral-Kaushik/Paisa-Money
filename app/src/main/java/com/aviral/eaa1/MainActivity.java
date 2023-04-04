@@ -1,6 +1,8 @@
 package com.aviral.eaa1;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,11 +13,12 @@ import com.aviral.eaa1.Models.Category;
 import com.aviral.eaa1.Models.Options;
 import com.aviral.eaa1.Utils.RecyclerViewMargin;
 import com.aviral.eaa1.databinding.ActivityMainBinding;
+import com.aviral.eaa1.databinding.LayoutBottomNavigationBinding;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    
+
     private ActivityMainBinding binding;
 
     @Override
@@ -26,10 +29,9 @@ public class MainActivity extends AppCompatActivity {
 
         setUpCategoryAdapter();
         setUpOptionAdapter();
-//        setUpBottomNavigation();
+        setUpBottomNavigation();
 
     }
-
 
 
     private void setUpOptionAdapter() {
@@ -114,31 +116,31 @@ public class MainActivity extends AppCompatActivity {
         ));
 
 
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false);
+
+        binding.categoriesRecyclerView.setLayoutManager(linearLayoutManager);
+
+        CategoryRecyclerViewAdapter categoryRecyclerViewAdapter =
+                new CategoryRecyclerViewAdapter(categoryList);
+
+        RecyclerViewMargin recyclerViewMargin = new RecyclerViewMargin(5);
+        binding.categoriesRecyclerView.addItemDecoration(recyclerViewMargin);
+
+        binding.categoriesRecyclerView.setAdapter(categoryRecyclerViewAdapter);
+
     }
 
-//    public void setUpBottomNavigation() {
-//        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-//
-//        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
-//            switch (item.getItemId()) {
-//                case R.id.earn_money:
-//                    // Do something when the "Home" item is clicked
-//                    return true;
-//                case R.id.spin:
-//                    // Do something when the "Search" item is clicked
-//                    return true;
-//                case R.id.scratch_card:
-//                    // Do something when the "Favorites" item is clicked
-//                    return true;
-//                case R.id.others:
-//                    // Do something when the "Notifications" item is clicked
-//                    return true;
-//                case R.id.profile:
-//                    // Do something when the "Profile" item is clicked
-//                    return true;
-//                default:
-//                    return false;
-//            }
-//        });
-//    }
+    public void setUpBottomNavigation() {
+        LinearLayout btnScratchCard = findViewById(R.id.btnScratchCard);
+        LinearLayout btnSpin = findViewById(R.id.btnSpin);
+        LinearLayout btnOthers = findViewById(R.id.btnOthers);
+        LinearLayout btnProfile = findViewById(R.id.btnProfile);
+
+        btnSpin.setOnClickListener(view -> startActivity(
+                new Intent(this, SpinActivity.class)));
+
+        btnScratchCard.setOnClickListener(view -> startActivity(
+                new Intent(this, ScratchCardActivity.class)));
+    }
 }

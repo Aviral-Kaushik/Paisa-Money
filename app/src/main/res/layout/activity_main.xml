@@ -7,203 +7,135 @@
     android:background="@color/background"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/user_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dummy_name"
-        android:fontFamily="@font/lato_bold"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:layout_marginStart="35dp"
-        android:layout_marginTop="22dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_balance"
-        android:layout_width="90dp"
-        android:layout_height="40dp"
-        android:background="@drawable/balance_bakcgrond"
-        android:text="@string/dummy_balance"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:layout_marginTop="15dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/wallet_card_layout"
-        android:layout_width="match_parent"
-        android:layout_height="116dp"
-        android:background="@drawable/wallet_balance_background"
-        android:layout_marginTop="100dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/tv_wallet_balance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/wallet_balance"
-            android:fontFamily="@font/lato_regular"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            android:layout_marginStart="35dp"
-            android:layout_marginTop="25dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-        <TextView
-            android:id="@+id/wallet_balance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dummy_wallet_balance"
-            android:fontFamily="@font/lato_bold"
-            android:textSize="22sp"
-            android:textColor="@color/black"
-            android:layout_marginStart="35dp"
-            android:layout_marginTop="25dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_wallet_balance"/>
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button_withdraw"
-            android:layout_width="105dp"
-            android:layout_height="36dp"
-            android:background="@drawable/btn_withdraw_background"
-            android:text="@string/withdraw"
-            android:textColor="#FFBC36"
-            android:textAllCaps="false"
-            android:fontFamily="@font/lato_regular"
-            android:textSize="14sp"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="25dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <LinearLayout
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:id="@+id/links_l"
-        app:layout_constraintTop_toBottomOf="@id/wallet_card_layout"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="5">
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_ludo"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ludo"
-                android:fontFamily="@font/lato_regular"
-                android:textSize="12sp"
-                android:textColor="@color/black_70"
-                android:layout_marginTop="5dp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_chess"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Chess"
-                android:fontFamily="@font/lato_regular"
-                android:textSize="12sp"
-                android:textColor="@color/black_70"
-                android:layout_marginTop="5dp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_pubg"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Pubg"
-                android:fontFamily="@font/lato_regular"
-                android:textSize="12sp"
-                android:textColor="@color/black_70"
-                android:layout_marginTop="5dp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_puzzle"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Puzzle"
-                android:fontFamily="@font/lato_regular"
-                android:textSize="12sp"
-                android:textColor="@color/black_70"
-                android:layout_marginTop="5dp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:orientation="vertical">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_card"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Card"
-                android:fontFamily="@font/lato_regular"
-                android:textSize="12sp"
-                android:textColor="@color/black_70"
-                android:layout_marginTop="5dp"/>
-        </LinearLayout>
-    </LinearLayout>
-
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/options_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/links_l"/>
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dummy_name"
+                    android:fontFamily="@font/lato_bold"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:layout_marginStart="35dp"
+                    android:layout_marginTop="22dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <androidx.appcompat.widget.AppCompatButton
+                    android:id="@+id/btn_balance"
+                    android:layout_width="90dp"
+                    android:layout_height="40dp"
+                    android:background="@drawable/balance_bakcgrond"
+                    android:text="@string/dummy_balance"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:layout_marginTop="15dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/wallet_card_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="116dp"
+                    android:background="@drawable/wallet_balance_background"
+                    android:layout_marginTop="100dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_wallet_balance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wallet_balance"
+                        android:fontFamily="@font/lato_regular"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginTop="25dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/wallet_balance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dummy_wallet_balance"
+                        android:fontFamily="@font/lato_bold"
+                        android:textSize="22sp"
+                        android:textColor="@color/black"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginTop="25dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_wallet_balance"/>
+
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/button_withdraw"
+                        android:layout_width="105dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/btn_withdraw_background"
+                        android:text="@string/withdraw"
+                        android:textColor="#FFBC36"
+                        android:textAllCaps="false"
+                        android:fontFamily="@font/lato_regular"
+                        android:textSize="14sp"
+                        android:layout_marginTop="25dp"
+                        android:layout_marginEnd="25dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/categories_recycler_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/wallet_card_layout"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/options_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:layout_marginBottom="120dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/categories_recycler_view"/>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+    <include layout="@layout/layout_bottom_navigation" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

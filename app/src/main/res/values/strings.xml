@@ -16,4 +16,6 @@
     <string name="scratch_card">Scratch Card</string>
     <string name="others">Others</string>
     <string name="profile">Profile</string>
+    <string name="spin_wheel">Spin Wheel</string>
+    <string name="gift_card">Gift Card</string>
 </resources>

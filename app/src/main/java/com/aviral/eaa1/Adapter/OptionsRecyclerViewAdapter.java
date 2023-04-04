@@ -23,7 +23,7 @@ import java.util.ArrayList;
 public class OptionsRecyclerViewAdapter
         extends RecyclerView.Adapter<OptionsRecyclerViewAdapter.ViewHolder> {
 
-    private ArrayList<Options> optionList;
+    private final ArrayList<Options> optionList;
 
     public OptionsRecyclerViewAdapter(ArrayList<Options> optionList) {
         this.optionList = optionList;
@@ -82,7 +82,7 @@ public class OptionsRecyclerViewAdapter
         private final ImageView optionImage;
         private final TextView optionTitle;
         private final TextView chances;
-        private final TextView optionButton;
+        private final AppCompatButton optionButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
