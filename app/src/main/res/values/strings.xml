@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">EAA1</string>
+    <string name="dummy_name">Mohit Anand</string>
+    <string name="dummy_balance">₹3.00</string>
+    <string name="wallet_balance">Wallet Balance</string>
+    <string name="dummy_wallet_balance">₹98.78</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="dummy_category_name">Ludo</string>
+    <string name="category_image">Category Image</string>
+    <string name="option_image">Option Image</string>
+    <string name="rate_5_star_amp_earn_money"><![CDATA[Rate 5 Star & Earn Money]]></string>
+    <string name="dummy_chances">1 Chance left</string>
+    <string name="reward_completed">Reward Completed</string>
+    <string name="earn_money">Earn Money</string>
+    <string name="spin">Spin</string>
+    <string name="scratch_card">Scratch Card</string>
+    <string name="others">Others</string>
+    <string name="profile">Profile</string>
+</resources>
