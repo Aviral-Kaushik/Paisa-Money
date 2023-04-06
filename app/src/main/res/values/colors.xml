@@ -11,4 +11,10 @@
     <color name="balance_background">#FFBC36</color>
     <color name="chances_not_left">#979797</color>
     <color name="bottom_nav_text_color">#808080</color>
+<<<<<<< HEAD
+=======
+    <color name="selected_payment_mode">#FFBC36</color>
+    <color name="payment_method_tv">#80000000</color>
+    <color name="black_70">#B3000000</color>
+>>>>>>> origin/Aviral
 </resources>

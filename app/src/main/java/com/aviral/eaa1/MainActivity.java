@@ -5,17 +5,14 @@ import android.os.Bundle;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.aviral.eaa1.Adapter.CategoryRecyclerViewAdapter;
-import com.aviral.eaa1.Adapter.OptionsRecyclerViewAdapter;
-import com.aviral.eaa1.Models.Category;
-import com.aviral.eaa1.Models.Options;
-import com.aviral.eaa1.Utils.RecyclerViewMargin;
+import com.aviral.eaa1.Fragments.EarnMoneyFragment;
+import com.aviral.eaa1.Fragments.ProfileFragment;
+import com.aviral.eaa1.Fragments.ScratchCardFragment;
+import com.aviral.eaa1.Fragments.SpinFragment;
 import com.aviral.eaa1.databinding.ActivityMainBinding;
 import com.aviral.eaa1.databinding.LayoutBottomNavigationBinding;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,93 +24,87 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+<<<<<<< HEAD
         setUpCategoryAdapter();
         setUpOptionAdapter();
+=======
+        EarnMoneyFragment earnMoneyFragment = new EarnMoneyFragment();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_container, earnMoneyFragment);
+        fragmentTransaction.commit();
+>>>>>>> origin/Aviral
         setUpBottomNavigation();
 
     }
 
 
+<<<<<<< HEAD
     private void setUpOptionAdapter() {
         ArrayList<Options> optionsArrayList = new ArrayList<>();
+=======
 
-        optionsArrayList.add(new Options(
-                R.drawable.ic_rate,
-                "Rate 5 Star & Earn Money",
-                1,
-                "₹10.00"
-        ));
+    public void setUpBottomNavigation() {
+        LinearLayout btnEarnMoney = findViewById(R.id.btnEarnMoney);
+        LinearLayout btnScratchCard = findViewById(R.id.btnScratchCard);
+        LinearLayout btnSpin = findViewById(R.id.btnSpin);
+        LinearLayout btnProfile = findViewById(R.id.btnProfile);
+        btnEarnMoney.setOnClickListener(view -> {
+            EarnMoneyFragment earnMoneyFragment = new EarnMoneyFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in,
+                            R.anim.fade_out,
+                            R.anim.fade_in,
+                            R.anim.slide_out
+                    );
+            fragmentTransaction.replace(R.id.main_container, earnMoneyFragment);
+            fragmentTransaction.commit();
+        });
+>>>>>>> origin/Aviral
 
-        optionsArrayList.add(new Options(
-                R.drawable.ic_daily,
-                "Daily Bonus",
-                4,
-                "₹0.25"
-        ));
+        btnScratchCard.setOnClickListener(view -> {
+            ScratchCardFragment scratchCardFragment = new ScratchCardFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in,
+                            R.anim.fade_out,
+                            R.anim.fade_in,
+                            R.anim.slide_out
+                    );
+            fragmentTransaction.replace(R.id.main_container, scratchCardFragment);
+            fragmentTransaction.commit();
+        });
 
-        optionsArrayList.add(new Options(
-                R.drawable.ic_collect,
-                "Collect Rewards",
-                0,
-                "₹0.20"
-        ));
+        btnSpin.setOnClickListener(view -> {
+            SpinFragment spinFragment = new SpinFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in,
+                            R.anim.fade_out,
+                            R.anim.fade_in,
+                            R.anim.slide_out
+                    );
+            fragmentTransaction.replace(R.id.main_container, spinFragment);
+            fragmentTransaction.commit();
+        });
 
-        optionsArrayList.add(new Options(
-                R.drawable.ic_watch_videos,
-                "Watch Videos",
-                10,
-                "₹0.50"
-        ));
+        btnProfile.setOnClickListener(view -> {
 
-        optionsArrayList.add(new Options(
-                R.drawable.ic_gold_points,
-                "Gold Points",
-                1,
-                "₹0.50"
-        ));
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false);
-
-        binding.optionsRecyclerView.setLayoutManager(linearLayoutManager);
-
-        OptionsRecyclerViewAdapter optionsRecyclerViewAdapter =
-                new OptionsRecyclerViewAdapter(optionsArrayList);
-
-        RecyclerViewMargin recyclerViewMargin = new RecyclerViewMargin(3);
-        binding.optionsRecyclerView.addItemDecoration(recyclerViewMargin);
-
-        binding.optionsRecyclerView.setAdapter(optionsRecyclerViewAdapter);
-
-    }
-
-    private void setUpCategoryAdapter() {
-        ArrayList<Category> categoryList = new ArrayList<>();
-
-        categoryList.add(new Category(
-                R.drawable.ic_ludo,
-                "Ludo"
-        ));
-
-        categoryList.add(new Category(
-                R.drawable.ic_chess,
-                "Chess"
-        ));
-
-        categoryList.add(new Category(
-                R.drawable.ic_pubg,
-                "Pubg"
-        ));
-
-        categoryList.add(new Category(
-                R.drawable.ic_puzzle,
-                "Puzzle"
-        ));
-
-        categoryList.add(new Category(
-                R.drawable.ic_card,
-                "Card"
-        ));
+            ProfileFragment profileFragment = new ProfileFragment();
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in,  // enter
+                            R.anim.fade_out,  // exit
+                            R.anim.fade_in,   // popEnter
+                            R.anim.slide_out  // popExit
+                    );
+            fragmentTransaction.replace(R.id.main_container, profileFragment);
+            fragmentTransaction.commit();
+        });
 
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
@@ -130,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
         binding.categoriesRecyclerView.setAdapter(categoryRecyclerViewAdapter);
 
     }
+<<<<<<< HEAD
 
     public void setUpBottomNavigation() {
         LinearLayout btnScratchCard = findViewById(R.id.btnScratchCard);
@@ -143,4 +135,6 @@ public class MainActivity extends AppCompatActivity {
         btnScratchCard.setOnClickListener(view -> startActivity(
                 new Intent(this, ScratchCardActivity.class)));
     }
+=======
+>>>>>>> origin/Aviral
 }

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFBF4"
+    tools:context=".InviteActivity">
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/invite"
+        android:fontFamily="@font/lato_bold"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="22dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_balance"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:background="@drawable/balance_bakcgrond"
+        android:text="@string/dummy_balance"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+        android:id="@+id/invite_and_earn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_invite_and_earn"
+        android:layout_marginTop="100dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/invite" />
+
+    <TextView
+        android:id="@+id/tv_copy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/copy_code"
+        android:fontFamily="@font/lato_regular"
+        android:textSize="16sp"
+        android:layout_marginTop="25dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/invite_and_earn"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageView
+        android:id="@+id/upper_dotted_line"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:src="@drawable/dotted_background"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="50dp"
+        android:contentDescription="@string/referral_code"
+        app:layout_constraintTop_toBottomOf="@id/tv_copy"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/referral_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dummy_referral_code"
+        android:fontFamily="@font/lato_bold"
+        android:textColor="#b3000000"
+        android:textSize="22sp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintStart_toStartOf="@id/upper_dotted_line"
+        app:layout_constraintTop_toTopOf="@id/upper_dotted_line"
+        app:layout_constraintBottom_toBottomOf="@id/upper_dotted_line"/>
+
+    <ImageView
+        android:id="@+id/copy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_copy"
+        android:layout_marginEnd="10dp"
+        android:contentDescription="@string/copy"
+        app:layout_constraintTop_toTopOf="@id/upper_dotted_line"
+        app:layout_constraintBottom_toBottomOf="@id/upper_dotted_line"
+        app:layout_constraintEnd_toStartOf="@id/copy_text"/>
+
+    <TextView
+        android:id="@+id/copy_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/copy"
+        android:fontFamily="@font/lato_regular"
+        android:textColor="#D6A139"
+        android:textSize="14sp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toEndOf="@id/upper_dotted_line"
+        app:layout_constraintTop_toTopOf="@id/upper_dotted_line"
+        app:layout_constraintBottom_toBottomOf="@id/upper_dotted_line"/>
+
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/referral_description"
+        android:fontFamily="@font/lato_regular"
+        android:textSize="16sp"
+        android:maxLines="3"
+        android:lines="3"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginEnd="45dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/upper_dotted_line"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_description">
+
+        <ImageView
+            android:id="@+id/share_whatsapp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_whatsapp"
+            android:contentDescription="@string/whatsapp"/>
+
+        <ImageView
+            android:id="@+id/share_telegram"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_marginEnd="35dp"
+            android:src="@drawable/ic_telegram"
+            android:contentDescription="@string/telegram"/>
+
+        <ImageView
+            android:id="@+id/share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_share"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@string/share"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

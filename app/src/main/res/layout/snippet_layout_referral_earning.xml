@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#FFFBF4">
+
+    <LinearLayout
+        android:id="@+id/table_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:padding="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/friend_name"
+            android:layout_height="17dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/dummy_friend_name"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="#80000000"
+            android:fontFamily="@font/lato_regular"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/referral_earning"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/dummy_earning_by_referral"
+            android:fontFamily="@font/lato_regular"
+            android:textSize="14sp"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:layout_marginStart="25dp" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1A000000"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/table_content"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
