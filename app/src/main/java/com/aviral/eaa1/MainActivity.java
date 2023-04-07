@@ -1,21 +1,34 @@
 package com.aviral.eaa1;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.aviral.eaa1.Fragments.EarnMoneyFragment;
 import com.aviral.eaa1.Fragments.ProfileFragment;
 import com.aviral.eaa1.Fragments.ScratchCardFragment;
 import com.aviral.eaa1.Fragments.SpinFragment;
+import com.aviral.eaa1.Utils.ApiConstants;
 import com.aviral.eaa1.databinding.ActivityMainBinding;
-import com.aviral.eaa1.databinding.LayoutBottomNavigationBinding;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
-
+    
     private ActivityMainBinding binding;
 
     @Override
@@ -24,24 +37,14 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-<<<<<<< HEAD
-        setUpCategoryAdapter();
-        setUpOptionAdapter();
-=======
         EarnMoneyFragment earnMoneyFragment = new EarnMoneyFragment();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.main_container, earnMoneyFragment);
         fragmentTransaction.commit();
->>>>>>> origin/Aviral
         setUpBottomNavigation();
 
     }
 
-
-<<<<<<< HEAD
-    private void setUpOptionAdapter() {
-        ArrayList<Options> optionsArrayList = new ArrayList<>();
-=======
 
     public void setUpBottomNavigation() {
         LinearLayout btnEarnMoney = findViewById(R.id.btnEarnMoney);
@@ -61,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.replace(R.id.main_container, earnMoneyFragment);
             fragmentTransaction.commit();
         });
->>>>>>> origin/Aviral
 
         btnScratchCard.setOnClickListener(view -> {
             ScratchCardFragment scratchCardFragment = new ScratchCardFragment();
@@ -107,34 +109,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false);
-
-        binding.categoriesRecyclerView.setLayoutManager(linearLayoutManager);
-
-        CategoryRecyclerViewAdapter categoryRecyclerViewAdapter =
-                new CategoryRecyclerViewAdapter(categoryList);
-
-        RecyclerViewMargin recyclerViewMargin = new RecyclerViewMargin(5);
-        binding.categoriesRecyclerView.addItemDecoration(recyclerViewMargin);
-
-        binding.categoriesRecyclerView.setAdapter(categoryRecyclerViewAdapter);
-
     }
-<<<<<<< HEAD
-
-    public void setUpBottomNavigation() {
-        LinearLayout btnScratchCard = findViewById(R.id.btnScratchCard);
-        LinearLayout btnSpin = findViewById(R.id.btnSpin);
-        LinearLayout btnOthers = findViewById(R.id.btnOthers);
-        LinearLayout btnProfile = findViewById(R.id.btnProfile);
-
-        btnSpin.setOnClickListener(view -> startActivity(
-                new Intent(this, SpinActivity.class)));
-
-        btnScratchCard.setOnClickListener(view -> startActivity(
-                new Intent(this, ScratchCardActivity.class)));
-    }
-=======
->>>>>>> origin/Aviral
 }
