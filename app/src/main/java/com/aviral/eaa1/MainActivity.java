@@ -1,16 +1,31 @@
 package com.aviral.eaa1;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.aviral.eaa1.Fragments.EarnMoneyFragment;
 import com.aviral.eaa1.Fragments.ProfileFragment;
 import com.aviral.eaa1.Fragments.ScratchCardFragment;
 import com.aviral.eaa1.Fragments.SpinFragment;
+import com.aviral.eaa1.Utils.ApiConstants;
 import com.aviral.eaa1.databinding.ActivityMainBinding;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     
@@ -29,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         setUpBottomNavigation();
 
     }
-
 
 
     public void setUpBottomNavigation() {
