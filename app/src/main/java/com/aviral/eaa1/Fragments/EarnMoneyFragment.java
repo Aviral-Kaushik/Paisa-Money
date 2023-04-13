@@ -16,7 +16,7 @@ import com.aviral.eaa1.Adapter.OptionsRecyclerViewAdapter;
 import com.aviral.eaa1.Models.Options;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.RecyclerViewMargin;
-import com.aviral.eaa1.WithdrawActivity;
+import com.aviral.eaa1.Activity.WithdrawActivity;
 import com.aviral.eaa1.databinding.EarnMoneyFragmentBinding;
 
 import java.util.ArrayList;

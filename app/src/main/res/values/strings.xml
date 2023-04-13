@@ -60,4 +60,5 @@
     <string name="payment">Payment</string>
     <string name="paypal_id">Paypal id</string>
     <string name="phone_no">Phone no.</string>
+    <string name="OAuthClientId">18504745640-jvts15p15bsjed7aiio9ikhcgjmagi2c.apps.googleusercontent.com</string>
 </resources>

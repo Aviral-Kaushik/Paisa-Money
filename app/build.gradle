@@ -8,7 +8,7 @@ android {
     defaultConfig {
         applicationId "com.aviral.eaa1"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -27,6 +27,7 @@ android {
     }
 
     buildFeatures {
+        dataBinding true
         viewBinding true
     }
 }
@@ -44,4 +45,6 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation 'com.amitshekhar.android:android-networking:1.0.2'
+    implementation 'com.google.android.gms:play-services-auth:20.4.1'
 }

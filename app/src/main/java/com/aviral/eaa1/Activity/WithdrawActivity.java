@@ -1,4 +1,4 @@
-package com.aviral.eaa1;
+package com.aviral.eaa1.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.aviral.eaa1.R;
 import com.aviral.eaa1.databinding.ActivityWithdrawBinding;
 
 public class WithdrawActivity extends AppCompatActivity {

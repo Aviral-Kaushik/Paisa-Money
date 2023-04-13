@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFBF4"
-    tools:context=".ScratchCardActivity">
+    tools:context=".Activity.ScratchCardActivity">
 
     <TextView
         android:id="@+id/user_name"

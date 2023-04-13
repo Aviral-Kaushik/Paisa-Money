@@ -1,6 +1,5 @@
-package com.aviral.eaa1;
+package com.aviral.eaa1.Activity;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,12 +10,14 @@ import android.view.animation.RotateAnimation;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.aviral.eaa1.R;
 import com.aviral.eaa1.databinding.ActivitySpinBinding;
-import com.ncorti.slidetoact.SlideToActView;
 
 import java.util.Random;
 
 public class SpinActivity extends AppCompatActivity {
+
+
 
     private ActivitySpinBinding binding;
 

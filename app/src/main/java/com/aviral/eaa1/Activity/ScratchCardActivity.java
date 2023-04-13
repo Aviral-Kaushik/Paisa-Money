@@ -1,4 +1,4 @@
-package com.aviral.eaa1;
+package com.aviral.eaa1.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
+import com.aviral.eaa1.R;
 import com.aviral.eaa1.databinding.ActivityScratchCardBinding;
 
 public class ScratchCardActivity extends AppCompatActivity {

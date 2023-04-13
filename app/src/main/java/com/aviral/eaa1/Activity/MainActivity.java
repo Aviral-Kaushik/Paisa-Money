@@ -1,5 +1,8 @@
-package com.aviral.eaa1;
+package com.aviral.eaa1.Activity;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.LinearLayout;
@@ -19,6 +22,7 @@ import com.aviral.eaa1.Fragments.EarnMoneyFragment;
 import com.aviral.eaa1.Fragments.ProfileFragment;
 import com.aviral.eaa1.Fragments.ScratchCardFragment;
 import com.aviral.eaa1.Fragments.SpinFragment;
+import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.ApiConstants;
 import com.aviral.eaa1.databinding.ActivityMainBinding;
 
@@ -43,8 +47,20 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
         setUpBottomNavigation();
 
+
     }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SharedPreferences sharedPreferences = getSharedPreferences("Check", Context.MODE_PRIVATE);
+        boolean isL = sharedPreferences.getBoolean("isLoggedIn", false);
+        if (!isL){
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+        }
+    }
 
     public void setUpBottomNavigation() {
         LinearLayout btnEarnMoney = findViewById(R.id.btnEarnMoney);
@@ -94,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         btnProfile.setOnClickListener(view -> {
-
             ProfileFragment profileFragment = new ProfileFragment();
             FragmentTransaction fragmentTransaction = getSupportFragmentManager()
                     .beginTransaction()
@@ -107,7 +122,5 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.replace(R.id.main_container, profileFragment);
             fragmentTransaction.commit();
         });
-
-
     }
 }

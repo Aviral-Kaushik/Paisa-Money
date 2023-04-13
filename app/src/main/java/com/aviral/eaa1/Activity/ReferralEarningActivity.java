@@ -1,4 +1,4 @@
-package com.aviral.eaa1;
+package com.aviral.eaa1.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;

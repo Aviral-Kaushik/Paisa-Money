@@ -9,10 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.aviral.eaa1.InviteActivity;
-import com.aviral.eaa1.R;
-import com.aviral.eaa1.ReferralEarningActivity;
-import com.aviral.eaa1.WithdrawActivity;
+import com.aviral.eaa1.Activity.InviteActivity;
+import com.aviral.eaa1.Activity.ReferralEarningActivity;
+import com.aviral.eaa1.Activity.WithdrawActivity;
 import com.aviral.eaa1.databinding.FragmentProfileBinding;
 
 

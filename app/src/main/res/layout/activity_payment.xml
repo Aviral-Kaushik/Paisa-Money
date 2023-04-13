@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFBF4"
-    tools:context=".PaymentActivity">
+    tools:context=".Activity.PaymentActivity">
 
     <ImageView
         android:id="@+id/payment"
