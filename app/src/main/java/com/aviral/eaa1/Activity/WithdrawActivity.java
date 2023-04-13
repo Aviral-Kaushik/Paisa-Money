@@ -7,8 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.databinding.ActivityWithdrawBinding;
+import com.google.android.material.snackbar.Snackbar;
 
 public class WithdrawActivity extends AppCompatActivity {
 
@@ -21,11 +23,24 @@ public class WithdrawActivity extends AppCompatActivity {
             isPhonePeSelected = false,
             isGooglePaySelected = false;
 
+    private UserData userData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityWithdrawBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        Intent intent = getIntent();
+
+        if (intent.hasExtra(getString(R.string.user_data))) {
+            userData = intent.getParcelableExtra(getString(R.string.user_data));
+        }
+
+        binding.payapalAmount.setText("$" + INRTODollar(Double.parseDouble(userData.getBalance())));
+        binding.paytmAmount.setText("₹" + userData.getBalance());
+        binding.phonePeAmount.setText("₹" + userData.getBalance());
+        binding.googlePayAmount.setText("₹" + userData.getBalance());
 
         binding.paypal.setOnClickListener(view -> {
             resetAllPaymentMethods();
@@ -105,24 +120,98 @@ public class WithdrawActivity extends AppCompatActivity {
     private void navigateToPaymentScreen() {
 
         if (isPayPalSelected) {
-            Intent intent = new Intent(this, PaymentActivity.class);
-            intent.putExtra(getString(R.string.payment_mode), getString(R.string.paypal));
-            startActivity(intent);
+
+            double withdrawAmount = Double.parseDouble(binding.payapalAmount.getText().toString().substring(1));
+
+            if (withdrawAmount > 1.4) {
+
+                Intent intent = new Intent(this, PaymentActivity.class);
+                intent.putExtra(getString(R.string.payment_mode), getString(R.string.paypal));
+                intent.putExtra(getString(R.string.user_data), userData);
+                intent.putExtra(getString(R.string.withdraw_amount), withdrawAmount);
+                startActivity(intent);
+
+            } else {
+
+                showSnackBar("Minimum Withdraw amount has to be $1.4");
+
+            }
+
         } else if (isPaytmSelected) {
-            Intent intent = new Intent(this, PaymentActivity.class);
-            intent.putExtra(getString(R.string.payment_mode), getString(R.string.paytm));
-            startActivity(intent);
+
+            double withdrawAmount = Double.parseDouble(binding.paytmAmount.getText().toString().substring(1));
+
+            if (withdrawAmount > 100) {
+
+                Intent intent = new Intent(this, PaymentActivity.class);
+                intent.putExtra(getString(R.string.payment_mode), getString(R.string.paytm));
+                intent.putExtra(getString(R.string.user_data), userData);
+                intent.putExtra(getString(R.string.withdraw_amount), withdrawAmount);
+                startActivity(intent);
+
+            } else {
+
+                showSnackBar("Minimum Withdraw amount has to be ₹100");
+
+            }
+
         } else if (isPhonePeSelected) {
-            Intent intent = new Intent(this, PaymentActivity.class);
-            intent.putExtra(getString(R.string.payment_mode), getString(R.string.phonepe));
-            startActivity(intent);
+
+            double withdrawAmount = Double.parseDouble(binding.phonePeAmount.getText().toString().substring(1));
+
+            if (withdrawAmount > 100) {
+
+                Intent intent = new Intent(this, PaymentActivity.class);
+                intent.putExtra(getString(R.string.payment_mode), getString(R.string.phonepe));
+                intent.putExtra(getString(R.string.user_data), userData);
+                intent.putExtra(getString(R.string.withdraw_amount), withdrawAmount);
+                startActivity(intent);
+
+            } else {
+
+                showSnackBar("Minimum Withdraw amount has to be ₹100");
+
+            }
+
         } else if (isGooglePaySelected) {
-            Intent intent = new Intent(this, PaymentActivity.class);
-            intent.putExtra(getString(R.string.payment_mode), getString(R.string.gpay));
-            startActivity(intent);
+
+            double withdrawAmount = Double.parseDouble(binding.googlePayAmount.getText().toString().substring(1));
+
+            if (withdrawAmount > 100) {
+
+                Intent intent = new Intent(this, PaymentActivity.class);
+                intent.putExtra(getString(R.string.payment_mode), getString(R.string.gpay));
+                intent.putExtra(getString(R.string.user_data), userData);
+                intent.putExtra(getString(R.string.withdraw_amount), withdrawAmount);
+                startActivity(intent);
+
+            } else {
+
+                showSnackBar("Minimum Withdraw amount has to be ₹100");
+
+            }
+
         } else {
-            Toast.makeText(this, "Please Select a payment mode to continue", Toast.LENGTH_SHORT).show();
+            showSnackBar("Please Select a payment mode to continue");
         }
+
+    }
+
+    private double INRTODollar(double inr) {
+
+        double exchangeRate = 0.014;
+
+        return inr * exchangeRate;
+    }
+
+    private void showSnackBar(String message) {
+
+        Snackbar snackbar = Snackbar.make(binding.layoutWithdraw,
+                message,
+                Snackbar.LENGTH_SHORT);
+        snackbar.show();
+
+        binding.btnContinue.setReversed(true);
 
     }
 

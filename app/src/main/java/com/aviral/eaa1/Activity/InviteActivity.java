@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.aviral.eaa1.databinding.ActivityInviteBinding;
+import com.google.android.material.snackbar.Snackbar;
 
 public class InviteActivity extends AppCompatActivity {
 
@@ -27,5 +28,10 @@ public class InviteActivity extends AppCompatActivity {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Referral Code", binding.referralCode.getText().toString());
         clipboard.setPrimaryClip(clip);
+
+        Snackbar snackbar = Snackbar.make(binding.inviteLayout
+                , "Referral Code Copied to Clipboard",
+                Snackbar.LENGTH_SHORT);
+        snackbar.show();
     }
 }

@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
+import com.aviral.eaa1.Models.UserData;
+import com.aviral.eaa1.R;
 import com.aviral.eaa1.databinding.FragmentSpinBinding;
 
 import java.util.Random;
@@ -28,13 +30,19 @@ public class SpinFragment extends Fragment {
 
     Random random = new Random();
 
+    private UserData userData;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         binding = FragmentSpinBinding.inflate(inflater, container, false);
 
+        userData = requireArguments().getParcelable(requireContext().getString(R.string.user_data));
+
         View view = binding.getRoot();
+
+        binding.btnBalance.setText(userData.getBalance());
 
         binding.btnSpin.setOnSlideCompleteListener(slideToActView -> startSpin());
 
@@ -77,7 +85,10 @@ public class SpinFragment extends Fragment {
                 // Save Earned Amount in Dialog Fragment
                 spinning = false;
 
-                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog("₹" + String.valueOf(earnedAmount));
+                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
+                        requireContext(),
+                        "₹" + earnedAmount,
+                        userData);
 
                 wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
             }
@@ -102,5 +113,11 @@ public class SpinFragment extends Fragment {
         for (int i = 0; i < sectors.length; i++) {
             sectorsDegree[i] = (i + 1) * sectorDegree;
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

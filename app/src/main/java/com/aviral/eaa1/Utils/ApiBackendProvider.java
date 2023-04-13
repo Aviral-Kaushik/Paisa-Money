@@ -4,9 +4,12 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.aviral.eaa1.Models.Friend;
 import com.aviral.eaa1.Models.RegisterUser;
@@ -19,188 +22,18 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ApiBackendProvider {
 
-    private static String TAG = "AviralAPI";
+    private static final String TAG = "AviralAPI";
 
-    private Context context;
+    private final Context context;
 
     public ApiBackendProvider(Context context) {
         this.context = context;
-    }
-
-
-    public boolean checkForEmailRegistration(String email) {
-
-        AtomicBoolean isEmailRegistered = new AtomicBoolean(false);
-
-        RequestQueue queue = Volley.newRequestQueue(context);
-
-        JSONObject postData = new JSONObject();
-        try {
-            postData.put("email", email);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                ApiConstants.BASE_URL + ApiConstants.CHECK_EMAIL,
-                postData,
-                response -> {
-
-                    try {
-                        JSONObject jsonObject = new JSONObject(response.toString());
-
-                        isEmailRegistered.set(jsonObject.getString("message").equals("Registered"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "checkForEmailRegistration: Exception Occurred while api call " + e.getMessage());
-                        throw new RuntimeException(e);
-                    }
-
-                    Log.d(TAG, response.toString());
-                }, error -> {
-
-                    isEmailRegistered.set(false);
-                    Log.d(TAG, error.toString());
-            });
-
-        queue.add(request);
-
-        return isEmailRegistered.get();
-    }
-
-    public boolean registerUser(RegisterUser user) {
-
-        AtomicBoolean isRegisterUserRequestSuccessful = new AtomicBoolean(false);
-
-        RequestQueue queue = Volley.newRequestQueue(context);
-
-        JSONObject postData = new JSONObject();
-        try {
-            postData.put("name", user.getName());
-            postData.put("email", user.getEmail());
-            postData.put("uid", user.getUid());
-            postData.put("token", user.getToken());
-            postData.put("password", user.getPassword());
-            postData.put("referral_code", user.getReferralCode());
-            postData.put("referred_by", user.getReferredBy());
-            postData.put("model", user.getModel());
-            postData.put("brand", user.getBrand());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                ApiConstants.BASE_URL + ApiConstants.REGISTER_USER,
-                postData,
-                response -> {
-
-                    try {
-                        JSONObject jsonObject = new JSONObject(response.toString());
-
-                        isRegisterUserRequestSuccessful.set(jsonObject.getString("message")
-                                .equals("“user registered successfully"));
-
-                    } catch (JSONException e) {
-                        Log.d(TAG, "checkForEmailRegistration: Exception Occurred while api call " + e.getMessage());
-                        throw new RuntimeException(e);
-                    }
-
-                    Log.d(TAG, response.toString());
-                }, error -> {
-
-                    isRegisterUserRequestSuccessful.set(false);
-                    Log.d(TAG, error.toString());
-        });
-
-        queue.add(request);
-
-        return isRegisterUserRequestSuccessful.get();
-
-    }
-
-    public boolean checkReferralCodeValidation(String referralCode) {
-
-        AtomicBoolean isReferralCodeValid = new AtomicBoolean(false);
-
-        RequestQueue queue = Volley.newRequestQueue(context);
-
-        JSONObject postData = new JSONObject();
-        try {
-            postData.put("referral_code", referralCode);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                ApiConstants.BASE_URL + ApiConstants.CHECK_REFERRAL_CODE,
-                postData,
-                response -> {
-
-                    try {
-                        JSONObject jsonObject = new JSONObject(response.toString());
-
-                        isReferralCodeValid.set(jsonObject.getString("message").equals("correct"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "checkForEmailRegistration: Exception Occurred while api call " + e.getMessage());
-                        throw new RuntimeException(e);
-                    }
-
-                    Log.d(TAG, response.toString());
-                }, error -> {
-
-                    isReferralCodeValid.set(false);
-                    Log.d(TAG, error.toString());
-        });
-
-        queue.add(request);
-
-        return isReferralCodeValid.get();
-
-    }
-
-    public boolean userLogin(String email, String password, String token) {
-
-        AtomicBoolean isUserLoginRequestSuccessFul = new AtomicBoolean(false);
-
-        RequestQueue queue = Volley.newRequestQueue(context);
-
-        JSONObject postData = new JSONObject();
-        try {
-            postData.put("email", email);
-            postData.put("Password", password);
-            postData.put("token", token);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                ApiConstants.BASE_URL + ApiConstants.LOGIN,
-                postData,
-                response -> {
-
-                    try {
-                        JSONObject jsonObject = new JSONObject(response.toString());
-
-                        isUserLoginRequestSuccessFul.set(jsonObject.getString("message").equals("success"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "checkForEmailRegistration: Exception Occurred while api call " + e.getMessage());
-                        throw new RuntimeException(e);
-                    }
-
-                    Log.d(TAG, response.toString());
-                }, error -> {
-
-                    isUserLoginRequestSuccessFul.set(false);
-                    Log.d(TAG, error.toString());
-            });
-
-            queue.add(request);
-
-            return isUserLoginRequestSuccessFul.get();
-
     }
 
     public UserData fetchUserData(String email) {
@@ -208,128 +41,121 @@ public class ApiBackendProvider {
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        JSONObject postData = new JSONObject();
-        try {
-            postData.put("email", email);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
+        StringRequest request = new StringRequest(Request.Method.POST,
                 ApiConstants.BASE_URL + ApiConstants.FETCH_USER_DATA,
-                postData,
                 response -> {
 
                     try {
-                        JSONObject jsonObject = new JSONObject(response.toString());
+                        JSONObject jsonObject = new JSONObject(response);
 
                         userData.setName(jsonObject.getString("name"));
                         userData.setEmail(jsonObject.getString("email"));
                         userData.setUid(jsonObject.getString("uid"));
-                        userData.setDisabled(jsonObject.getString("disabled"));
-                        userData.setReferred(jsonObject.getString("referred"));
+                        userData.setDisabled(Integer.parseInt(jsonObject.getString("disabled")));
+                        userData.setReferred(Integer.parseInt(jsonObject.getString("referred")));
                         userData.setDate(jsonObject.getString("date"));
                         userData.setTime(jsonObject.getString("time"));
                         userData.setReferredBy(jsonObject.getString("referred_by"));
                         userData.setReferralCode(jsonObject.getString("referral_code"));
                         userData.setBalance(jsonObject.getString("balance"));
-                        userData.setReferralEarning(jsonObject.getString("refer_earning"));
-                        userData.setLifetime(jsonObject.getString("lifetime"));
+                        userData.setReferralEarning(Float.parseFloat(jsonObject.getString("refer_earning")));
+                        userData.setLifetime(Float.parseFloat(jsonObject.getString("lifetime")));
                         userData.setIsRewarded(jsonObject.getString("is_rewarded"));
 
 
                     } catch (JSONException e) {
                         Log.d(TAG, "checkForEmailRegistration: Exception Occurred while api call " + e.getMessage());
-                        throw new RuntimeException(e);
                     }
 
-                    Log.d(TAG, response.toString());
+                    Log.d(TAG, response);
                 }, error -> {
 
-                    Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, error.toString());
-        });
+            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, error.toString());
+        }) {
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=" + getParamsEncoding();
+            }
+
+            @Override
+            protected String getParamsEncoding() {
+                return "UTF-8";
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String,String> params = new HashMap<>();
+                params.put("Content-Type","application/x-www-form-urlencoded");
+                return params;
+            }
+
+            @NonNull
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> postData = new HashMap<>();
+                postData.put("email", email);
+                return postData;
+            }
+        };
 
         queue.add(request);
 
         return userData;
     }
 
-    private boolean resetPassword(String email, String password) {
-
-        AtomicBoolean isResetPasswordRequestSuccessful = new AtomicBoolean(false);
-
-        RequestQueue queue = Volley.newRequestQueue(context);
-
-        JSONObject postData = new JSONObject();
-        try {
-            postData.put("email", email);
-            postData.put("Password", password);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
-                ApiConstants.BASE_URL + ApiConstants.RESET_PASSWORD,
-                postData,
-                response -> {
-
-                    try {
-                        JSONObject jsonObject = new JSONObject(response.toString());
-
-                        isResetPasswordRequestSuccessful.set(jsonObject.getString("message").equals("success"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "checkForEmailRegistration: Exception Occurred while api call " + e.getMessage());
-                        throw new RuntimeException(e);
-                    }
-
-                    Log.d(TAG, response.toString());
-                }, error -> {
-
-                    isResetPasswordRequestSuccessful.set(false);
-                    Log.d(TAG, error.toString());
-        });
-
-        queue.add(request);
-
-        return isResetPasswordRequestSuccessful.get();
-
-    }
-
-    private boolean updateUserBalance(String userId, String updateBalance) {
+    public boolean updateUserBalance(String userId, String updateBalance) {
 
         AtomicBoolean isUpdateUserBalanceRequestSuccessful = new AtomicBoolean(false);
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        JSONObject postData = new JSONObject();
-        try {
-            postData.put("user_id", userId);
-            postData.put("value", updateBalance);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
+        StringRequest request = new StringRequest(Request.Method.POST,
                 ApiConstants.BASE_URL + ApiConstants.UPDATE_USER_BALANCE,
-                postData,
                 response -> {
 
                     try {
-                        JSONObject jsonObject = new JSONObject(response.toString());
+                        JSONObject jsonObject = new JSONObject(response);
 
                         isUpdateUserBalanceRequestSuccessful.set(jsonObject.getString("status").equals("updated"));
                     } catch (JSONException e) {
                         Log.d(TAG, "checkForEmailRegistration: Exception Occurred while api call " + e.getMessage());
-                        throw new RuntimeException(e);
                     }
 
-                    Log.d(TAG, response.toString());
+                    Log.d(TAG, response);
                 }, error -> {
 
-                    isUpdateUserBalanceRequestSuccessful.set(false);
-                    Log.d(TAG, error.toString());
-        });
+            isUpdateUserBalanceRequestSuccessful.set(false);
+            Log.d(TAG, error.toString());
+        }) {
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=" + getParamsEncoding();
+            }
+
+            @Override
+            protected String getParamsEncoding() {
+                return "UTF-8";
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String,String> params = new HashMap<>();
+                params.put("Content-Type","application/x-www-form-urlencoded");
+                return params;
+            }
+
+            @NonNull
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> postData = new HashMap<>();
+                postData.put("user_id", userId);
+                postData.put("value", updateBalance);
+                return postData;
+            }
+        };
 
         queue.add(request);
 
@@ -342,40 +168,57 @@ public class ApiBackendProvider {
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        JSONObject postData = new JSONObject();
-        try {
-            postData.put("user_id", withdrawRequest.getUserId());
-            postData.put("name", withdrawRequest.getName());
-            postData.put("number", withdrawRequest.getNumber());
-            postData.put("id", withdrawRequest.getId());
-            postData.put("amount", withdrawRequest.getAmount());
-            postData.put("bank_name", withdrawRequest.getBankName());
-            postData.put("method", withdrawRequest.getMethod());
-            postData.put("unique_id", withdrawRequest.getUniqueID());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
+        StringRequest request = new StringRequest(Request.Method.POST,
                 ApiConstants.BASE_URL + ApiConstants.WITHDRAW_REQUEST,
-                postData,
                 response -> {
 
                     try {
-                        JSONObject jsonObject = new JSONObject(response.toString());
+                        JSONObject jsonObject = new JSONObject(response);
 
                         isWithdrawRequestSuccessful.set(jsonObject.getString("message").equals("added"));
                     } catch (JSONException e) {
                         Log.d(TAG, "checkForEmailRegistration: Exception Occurred while api call " + e.getMessage());
-                        throw new RuntimeException(e);
                     }
 
-                    Log.d(TAG, response.toString());
+                    Log.d(TAG, response);
                 }, error -> {
 
             isWithdrawRequestSuccessful.set(false);
             Log.d(TAG, error.toString());
-        });
+        }) {
+
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=" + getParamsEncoding();
+            }
+
+            @Override
+            protected String getParamsEncoding() {
+                return "UTF-8";
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String,String> params = new HashMap<>();
+                params.put("Content-Type","application/x-www-form-urlencoded");
+                return params;
+            }
+
+            @NonNull
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> postData = new HashMap<>();
+                postData.put("user_id", withdrawRequest.getUserId());
+                postData.put("name", withdrawRequest.getName());
+                postData.put("number", withdrawRequest.getNumber());
+                postData.put("id", withdrawRequest.getId());
+                postData.put("amount", String.valueOf(withdrawRequest.getAmount()));
+                postData.put("bank_name", withdrawRequest.getBankName());
+                postData.put("method", withdrawRequest.getMethod());
+                postData.put("unique_id", withdrawRequest.getUniqueID());
+                return postData;
+            }
+        };
 
         queue.add(request);
 
@@ -388,20 +231,12 @@ public class ApiBackendProvider {
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
-        JSONObject postData = new JSONObject();
-        try {
-            postData.put("referral_code", referralCode);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,
+        StringRequest request = new StringRequest(Request.Method.POST,
                 ApiConstants.BASE_URL + ApiConstants.LIST_REFER_FRIENDS,
-                postData,
                 response -> {
 
                     try {
-                        JSONObject jsonObject = new JSONObject(response.toString());
+                        JSONObject jsonObject = new JSONObject(response);
 
                         if (jsonObject.getString("message").equals("Found")) {
 
@@ -423,14 +258,36 @@ public class ApiBackendProvider {
 
                     } catch (JSONException e) {
                         Log.d(TAG, "checkForEmailRegistration: Exception Occurred while api call " + e.getMessage());
-                        throw new RuntimeException(e);
                     }
 
-                    Log.d(TAG, response.toString());
-                }, error -> {
+                    Log.d(TAG, response);
+                }, error -> Log.d(TAG, error.toString())) {
 
-            Log.d(TAG, error.toString());
-        });
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=" + getParamsEncoding();
+            }
+
+            @Override
+            protected String getParamsEncoding() {
+                return "UTF-8";
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String,String> params = new HashMap<>();
+                params.put("Content-Type","application/x-www-form-urlencoded");
+                return params;
+            }
+
+            @NonNull
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> postData = new HashMap<>();
+                postData.put("referral_code", referralCode);
+                return postData;
+            }
+        };
 
         queue.add(request);
 
@@ -458,7 +315,6 @@ public class ApiBackendProvider {
 
                     } catch (JSONException e) {
                         Log.d(TAG, "checkForEmailRegistration: Exception Occurred while api call " + e.getMessage());
-                        throw new RuntimeException(e);
                     }
 
                     Log.d(TAG, response.toString());

@@ -45,7 +45,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = LoginActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         dialog = new LoadingDialog(this);
+
         GoogleSignInOptions gso = new GoogleSignInOptions
                 .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.OAuthClientId))
@@ -78,9 +80,12 @@ public class LoginActivity extends AppCompatActivity {
         String ce = account.getEmail();
         StringRequest check = new StringRequest(Request.Method.POST, Links.CHECK_EMAIL, response -> {
             try {
+
                 JSONObject jsonObjectC = new JSONObject(response);
                 String mes = jsonObjectC.getString("message");
+
                 if (mes.equals("Registered")){
+
                     String token = TokenPreference.getInstance(getApplicationContext()).getDeviceToken();
                     new UpdateToken(getApplicationContext()).updateToken(account.getEmail(), token);
                     dialog.dismiss();
@@ -90,14 +95,17 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString("email", account.getEmail());
                     editor.apply();
                     getUserDetails();
+
                 }
                 else if (mes.equals("Email Not Registered")){
+
                     dialog.dismiss();
                     startActivity(new Intent(LoginActivity.this, ReferCodeActivity.class)
                             .putExtra("name", account.getDisplayName())
                             .putExtra("email", account.getEmail())
                             .putExtra("password", "")
                             .putExtra("fromGoogle", true));
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -119,8 +127,10 @@ public class LoginActivity extends AppCompatActivity {
     private void getUserDetails() {
         SharedPreferences sharedPreferences = getSharedPreferences("Check", Context.MODE_PRIVATE);
         String currentUserId = sharedPreferences.getString("email", null);
+
         StringRequest stringRequest = new StringRequest(Request.Method.POST, Links.FETCH_DATA, response -> {
             try {
+
                 JSONObject model = new JSONObject(response);
                 String name = model.getString("name");
                 String email = model.getString("email");
@@ -150,7 +160,9 @@ public class LoginActivity extends AppCompatActivity {
                 editor.putFloat("lifetime", (float) lifetime);
                 editor.putString("is_rewarded", is_rewarded);
                 editor.apply();
+
                 startActivity(new Intent(LoginActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -10,30 +10,29 @@ public class UserData implements Parcelable {
     private String name;
     private String email;
     private String uid;
-    private String disabled;
-    private String referred;
+    private int disabled;
+    private int referred;
     private String date;
     private String time;
     private String referredBy;
     private String referralCode;
     private String balance;
-    private String referralEarning;
-    private String lifetime;
+    private float referralEarning;
+    private float lifetime;
     private String isRewarded;
 
     public UserData(String name,
                     String email,
                     String uid,
-                    String disabled,
-                    String referred,
+                    int disabled,
+                    int referred,
                     String date,
                     String time,
                     String referredBy,
                     String referralCode,
                     String balance,
-                    String referralEarning,
-                    String lifetime,
-                    String isRewarded) {
+                    float referralEarning,
+                    float lifetime, String isRewarded) {
         this.name = name;
         this.email = email;
         this.uid = uid;
@@ -50,22 +49,21 @@ public class UserData implements Parcelable {
     }
 
     public UserData() {
-
     }
 
     protected UserData(Parcel in) {
         name = in.readString();
         email = in.readString();
         uid = in.readString();
-        disabled = in.readString();
-        referred = in.readString();
+        disabled = in.readInt();
+        referred = in.readInt();
         date = in.readString();
         time = in.readString();
         referredBy = in.readString();
         referralCode = in.readString();
         balance = in.readString();
-        referralEarning = in.readString();
-        lifetime = in.readString();
+        referralEarning = in.readFloat();
+        lifetime = in.readFloat();
         isRewarded = in.readString();
     }
 
@@ -105,19 +103,19 @@ public class UserData implements Parcelable {
         this.uid = uid;
     }
 
-    public String getDisabled() {
+    public int getDisabled() {
         return disabled;
     }
 
-    public void setDisabled(String disabled) {
+    public void setDisabled(int disabled) {
         this.disabled = disabled;
     }
 
-    public String getReferred() {
+    public int getReferred() {
         return referred;
     }
 
-    public void setReferred(String referred) {
+    public void setReferred(int referred) {
         this.referred = referred;
     }
 
@@ -161,19 +159,19 @@ public class UserData implements Parcelable {
         this.balance = balance;
     }
 
-    public String getReferralEarning() {
+    public float getReferralEarning() {
         return referralEarning;
     }
 
-    public void setReferralEarning(String referralEarning) {
+    public void setReferralEarning(float referralEarning) {
         this.referralEarning = referralEarning;
     }
 
-    public String getLifetime() {
+    public float getLifetime() {
         return lifetime;
     }
 
-    public void setLifetime(String lifetime) {
+    public void setLifetime(float lifetime) {
         this.lifetime = lifetime;
     }
 
@@ -195,15 +193,15 @@ public class UserData implements Parcelable {
         parcel.writeString(name);
         parcel.writeString(email);
         parcel.writeString(uid);
-        parcel.writeString(disabled);
-        parcel.writeString(referred);
+        parcel.writeInt(disabled);
+        parcel.writeInt(referred);
         parcel.writeString(date);
         parcel.writeString(time);
         parcel.writeString(referredBy);
         parcel.writeString(referralCode);
         parcel.writeString(balance);
-        parcel.writeString(referralEarning);
-        parcel.writeString(lifetime);
+        parcel.writeFloat(referralEarning);
+        parcel.writeFloat(lifetime);
         parcel.writeString(isRewarded);
     }
 }

@@ -46,7 +46,9 @@ public class ReferCodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ReferCodeDesignBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
         dialog = new LoadingDialog(this);
+
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         String email = intent.getStringExtra("email");

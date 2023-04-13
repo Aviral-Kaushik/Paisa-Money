@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.aviral.eaa1.Adapter.OptionsRecyclerViewAdapter;
 import com.aviral.eaa1.Models.Options;
+import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.RecyclerViewMargin;
 import com.aviral.eaa1.Activity.WithdrawActivity;
@@ -25,6 +26,8 @@ public class EarnMoneyFragment extends Fragment {
 
     private EarnMoneyFragmentBinding binding;
 
+    private UserData userData;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -33,12 +36,22 @@ public class EarnMoneyFragment extends Fragment {
 
         binding.earnMoneyScrollView.fullScroll(ScrollView.FOCUS_UP);
 
+        userData = requireArguments().getParcelable(requireContext().getString(R.string.user_data));
+
+        binding.walletBalance.setText(userData.getBalance());
+        binding.btnBalance.setText(userData.getBalance());
+
         View view = binding.getRoot();
 
         setUpOptionAdapter();
 
-        binding.buttonWithdraw.setOnClickListener(view1 ->
-                startActivity(new Intent(getContext(), WithdrawActivity.class)));
+        binding.buttonWithdraw.setOnClickListener(view1 -> {
+
+            Intent intent = new Intent(getContext(), WithdrawActivity.class);
+            intent.putExtra(getString(R.string.user_data), userData);
+
+            startActivity(intent);
+        });
 
         return view;
     }
