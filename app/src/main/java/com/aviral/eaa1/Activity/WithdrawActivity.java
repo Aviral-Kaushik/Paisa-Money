@@ -1,16 +1,17 @@
 package com.aviral.eaa1.Activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.databinding.ActivityWithdrawBinding;
 import com.google.android.material.snackbar.Snackbar;
+
+import java.text.DecimalFormat;
 
 public class WithdrawActivity extends AppCompatActivity {
 
@@ -37,10 +38,16 @@ public class WithdrawActivity extends AppCompatActivity {
             userData = intent.getParcelableExtra(getString(R.string.user_data));
         }
 
-        binding.payapalAmount.setText("$" + INRTODollar(Double.parseDouble(userData.getBalance())));
-        binding.paytmAmount.setText("₹" + userData.getBalance());
-        binding.phonePeAmount.setText("₹" + userData.getBalance());
-        binding.googlePayAmount.setText("₹" + userData.getBalance());
+        binding.amount.setText(String.format("₹%s ≈ $%s",
+                userData.getBalance(),
+                INRTODollar(Double.parseDouble(userData.getBalance()))));
+
+        binding.userName.setText(userData.getName());
+
+        binding.payapalAmount.setText(String.format("$%s", INRTODollar(Double.parseDouble(userData.getBalance()))));
+        binding.paytmAmount.setText(String.format("₹%s", userData.getBalance()));
+        binding.phonePeAmount.setText(String.format("₹%s", userData.getBalance()));
+        binding.googlePayAmount.setText(String.format("₹%s", userData.getBalance()));
 
         binding.paypal.setOnClickListener(view -> {
             resetAllPaymentMethods();
@@ -201,7 +208,9 @@ public class WithdrawActivity extends AppCompatActivity {
 
         double exchangeRate = 0.014;
 
-        return inr * exchangeRate;
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
+        return Double.parseDouble(decimalFormat.format(inr * exchangeRate));
     }
 
     private void showSnackBar(String message) {

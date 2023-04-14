@@ -1,5 +1,7 @@
 package com.aviral.eaa1.Fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +16,9 @@ import androidx.fragment.app.Fragment;
 import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
+import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.databinding.FragmentSpinBinding;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Random;
 
@@ -32,6 +36,10 @@ public class SpinFragment extends Fragment {
 
     private UserData userData;
 
+    private int chancesLeft;
+
+    private LoadingDialog loadingDialog;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,19 +50,45 @@ public class SpinFragment extends Fragment {
 
         View view = binding.getRoot();
 
+        loadingDialog = new LoadingDialog(requireContext());
+        loadingDialog.show();
+
         binding.btnBalance.setText(userData.getBalance());
+
+        getChances();
 
         binding.btnSpin.setOnSlideCompleteListener(slideToActView -> startSpin());
 
         return view;
     }
 
+    private void getChances() {
+        SharedPreferences chancesPreferences = requireActivity().getSharedPreferences("spinChances", Context.MODE_PRIVATE);
+        chancesLeft = chancesPreferences.getInt("chancesLeft", 10);
+
+        if (chancesLeft > 1) {
+            binding.tvChances.setText(chancesLeft + " Chances Left");
+        } else {
+            binding.tvChances.setText(chancesLeft + " Chance Left");
+        }
+
+        loadingDialog.dismiss();
+
+    }
+
     private void startSpin() {
         generateSectorDegree();
 
-        if (!spinning) {
-            spin();
-            spinning = true;
+        if (chancesLeft > 0) {
+            if (!spinning) {
+                spin();
+                spinning = true;
+            }
+        } else {
+            Snackbar snackbar = Snackbar.make(binding.spinLayout,
+                    "You Cannot Spin as 0 Chances Left",
+                    Snackbar.LENGTH_SHORT);
+            snackbar.show();
         }
     }
 
@@ -85,6 +119,8 @@ public class SpinFragment extends Fragment {
                 // Save Earned Amount in Dialog Fragment
                 spinning = false;
 
+                decrementChances();
+
                 WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
                         requireContext(),
                         "₹" + earnedAmount,
@@ -100,6 +136,17 @@ public class SpinFragment extends Fragment {
         });
 
         binding.spinningWheel.startAnimation(rotateAnimation);
+
+    }
+
+    private void decrementChances() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("spinChances", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        if (chancesLeft > 0) {
+            editor.putInt("chancesLeft", (chancesLeft-1));
+            editor.apply();
+        }
 
     }
 

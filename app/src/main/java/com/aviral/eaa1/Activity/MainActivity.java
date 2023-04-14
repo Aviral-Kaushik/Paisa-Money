@@ -3,6 +3,7 @@ package com.aviral.eaa1.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -18,8 +19,8 @@ import com.aviral.eaa1.Fragments.SpinFragment;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
+import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.databinding.ActivityMainBinding;
-import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,15 +30,28 @@ public class MainActivity extends AppCompatActivity {
 
     private Bundle userDataBundle;
 
+    private LoadingDialog loadingDialog;
+
+    private Context context;
+
+    // Z1VTJJ
+    // zaviralkaushik@gmail.com
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        context = MainActivity.this;
+
+        loadingDialog = new LoadingDialog(this);
+        loadingDialog.show();
+
         userDataBundle = new Bundle();
 
-        onStart();
+//        FetchUserData fetchUserData = new FetchUserData();
+//        fetchUserData.execute();
 
     }
 
@@ -56,25 +70,53 @@ public class MainActivity extends AppCompatActivity {
 
             fetchUserData(email);
         }
+    }
 
-//        if (isL) {
-//            SharedPreferences userPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
-//            userData = new UserData(
-//                    userPreferences.getString("name", ""),
-//                    userPreferences.getString("email", ""),
-//                    userPreferences.getString("uid", ""),
-//                    userPreferences.getInt("disabled", 0),
-//                    userPreferences.getInt("referred", 0),
-//                    userPreferences.getString("date", ""),
-//                    userPreferences.getString("time", ""),
-//                    userPreferences.getString("referred_by", ""),
-//                    userPreferences.getString("token", "-"),
-//                    userPreferences.getString("referral_code", ""),
-//                    userPreferences.getFloat("refer_earning", (float) 0.00f),
-//                    userPreferences.getFloat("lifetime", (float) 0.00f),
-//                    userPreferences.getString("is_rewarded", "")
-//            );
-//        }
+    private class FetchUserData extends AsyncTask<Void, Void, Void> {
+
+        String email;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            SharedPreferences sharedPreferences = getSharedPreferences("Check", Context.MODE_PRIVATE);
+            boolean isL = sharedPreferences.getBoolean("isLoggedIn", false);
+            Log.d("AviralAPI", "onStart: isL " + isL);
+            if (!isL) {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+            } else {
+                email = sharedPreferences.getString("email", "");
+            }
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            ApiBackendProvider backendProvider = new ApiBackendProvider(context);
+
+            userData = backendProvider.fetchUserData(email);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+
+            loadingDialog.dismiss();
+
+            Bundle userDataBundle = new Bundle();
+            userDataBundle.putParcelable(getString(R.string.user_data), userData);
+
+            EarnMoneyFragment earnMoneyFragment = new EarnMoneyFragment();
+            earnMoneyFragment.setArguments(userDataBundle);
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.main_container, earnMoneyFragment);
+            fragmentTransaction.commit();
+            setUpBottomNavigation();
+        }
     }
 
 
@@ -85,7 +127,10 @@ public class MainActivity extends AppCompatActivity {
 
         userData = backendProvider.fetchUserData(email);
 
-        delay(2000, () -> {
+        delay(() -> {
+
+            loadingDialog.dismiss();
+
             Bundle userDataBundle = new Bundle();
             userDataBundle.putParcelable(getString(R.string.user_data), userData);
 
@@ -99,16 +144,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void delay(int milliseconds, Runnable runnable) {
+    private void delay(Runnable runnable) {
         Handler handler = new Handler();
-        handler.postDelayed(runnable, milliseconds);
-    }
-
-    private void showSnackbar(String message) {
-        Snackbar snackbar = Snackbar.make(binding.mainContainer,
-                message,
-                Snackbar.LENGTH_SHORT);
-        snackbar.show();
+        handler.postDelayed(runnable, 2000);
     }
 
     public void setUpBottomNavigation() {

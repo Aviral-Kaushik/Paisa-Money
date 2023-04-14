@@ -3,6 +3,7 @@ package com.aviral.eaa1.Fragments;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -22,7 +23,7 @@ public class ProfileFragment extends Fragment {
     private FragmentProfileBinding binding;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         binding = FragmentProfileBinding.inflate(inflater, container, false);
@@ -34,11 +35,20 @@ public class ProfileFragment extends Fragment {
         binding.walletBalance.setText(userData.getBalance());
         binding.btnBalance.setText(userData.getBalance());
 
-        binding.btnInviteEarn.setOnClickListener(view1 ->
-                startActivity(new Intent(getContext(), InviteActivity.class)));
+        binding.userName.setText(userData.getName());
+        binding.userEmail.setText(userData.getEmail());
 
-        binding.btnReferralEarning.setOnClickListener(view1 ->
-                startActivity(new Intent(getContext(), ReferralEarningActivity.class)));
+        binding.btnInviteEarn.setOnClickListener(view1 ->{
+            Intent intent = new Intent(getContext(), InviteActivity.class);
+            intent.putExtra(getString(R.string.user_data), userData);
+            startActivity(intent);
+        });
+
+        binding.btnReferralEarning.setOnClickListener(view1 ->{
+            Intent intent = new Intent(getContext(), ReferralEarningActivity.class);
+            intent.putExtra(getString(R.string.user_data), userData);
+            startActivity(intent);
+        });
 
         binding.buttonWithdraw.setOnClickListener(view1 -> {
             Intent intent = new Intent(getContext(), WithdrawActivity.class);

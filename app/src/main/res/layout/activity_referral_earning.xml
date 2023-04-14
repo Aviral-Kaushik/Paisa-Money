@@ -33,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
-            android:id="@+id/tv_wallet_balance"
+            android:id="@+id/tv_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/dummy_name"
@@ -56,7 +56,7 @@
             android:layout_marginStart="65dp"
             android:layout_marginTop="20dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_wallet_balance"/>
+            app:layout_constraintTop_toBottomOf="@id/tv_user_name"/>
 
         <TextView
             android:id="@+id/tv_friends_joined"

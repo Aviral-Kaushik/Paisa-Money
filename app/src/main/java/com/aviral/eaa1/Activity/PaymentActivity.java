@@ -1,9 +1,10 @@
 package com.aviral.eaa1.Activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.Models.WithdrawRequest;
@@ -44,14 +45,20 @@ public class PaymentActivity extends AppCompatActivity {
         } else if (paymentMode.equals(getString(R.string.paytm))) {
 
             binding.id.setHint("Paytm UPI id");
+            binding.imagePaymentMode.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_paytm));
+            binding.textPaymentMode.setText(getString(R.string.paytm));
 
         } else if (paymentMode.equals(getString(R.string.phonepe))) {
 
             binding.id.setHint("Phonepe UPI id");
+            binding.imagePaymentMode.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_phone_pay));
+            binding.textPaymentMode.setText(getString(R.string.phonepe));
 
         } else if (paymentMode.equals(getString(R.string.gpay))) {
 
             binding.id.setHint("GPay UPI id");
+            binding.imagePaymentMode.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_google_pay));
+            binding.textPaymentMode.setText(getString(R.string.gpay));
 
         }
 

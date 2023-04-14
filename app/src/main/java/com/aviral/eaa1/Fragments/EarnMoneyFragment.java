@@ -43,6 +43,8 @@ public class EarnMoneyFragment extends Fragment {
 
         View view = binding.getRoot();
 
+        binding.userName.setText(userData.getName());
+
         setUpOptionAdapter();
 
         binding.buttonWithdraw.setOnClickListener(view1 -> {

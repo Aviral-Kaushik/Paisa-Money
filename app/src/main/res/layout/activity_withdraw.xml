@@ -35,7 +35,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/tv_wallet_balance"
+            android:id="@+id/tv_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
@@ -48,7 +48,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/friends_joined"
+            android:id="@+id/amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
@@ -58,7 +58,7 @@
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tv_wallet_balance" />
+            app:layout_constraintTop_toBottomOf="@id/tv_user_name" />
 
         <TextView
             android:id="@+id/tv_friends_joined"
@@ -73,7 +73,7 @@
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/friends_joined" />
+            app:layout_constraintTop_toBottomOf="@id/amount" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -134,7 +134,7 @@
                 android:layout_marginBottom="12dp"
                 android:textSize="24sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_wallet_balance" />
+                app:layout_constraintTop_toBottomOf="@id/tv_user_name" />
 
 
         </LinearLayout>
@@ -185,7 +185,7 @@
                 android:textSize="24sp"
                 android:layout_gravity="center"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_wallet_balance" />
+                app:layout_constraintTop_toBottomOf="@id/tv_user_name" />
 
 
         </LinearLayout>
@@ -245,7 +245,7 @@
                 android:textSize="24sp"
                 android:layout_marginBottom="12dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_wallet_balance" />
+                app:layout_constraintTop_toBottomOf="@id/tv_user_name" />
 
 
         </LinearLayout>
@@ -293,7 +293,7 @@
                 android:layout_marginBottom="12dp"
                 android:textSize="24sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_wallet_balance" />
+                app:layout_constraintTop_toBottomOf="@id/tv_user_name" />
 
 
         </LinearLayout>

@@ -11,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.aviral.eaa1.Models.ReferralEarning;
+import com.aviral.eaa1.Models.Friend;
 import com.aviral.eaa1.R;
 
 import java.util.ArrayList;
@@ -19,9 +19,9 @@ import java.util.ArrayList;
 public class ReferralEarningAdapter
         extends RecyclerView.Adapter<ReferralEarningAdapter.ViewHolder> {
 
-    private final ArrayList<ReferralEarning> referralEarningArrayList;
+    private final ArrayList<Friend> referralEarningArrayList;
 
-    public ReferralEarningAdapter(ArrayList<ReferralEarning> referralEarningArrayList) {
+    public ReferralEarningAdapter(ArrayList<Friend> referralEarningArrayList) {
         this.referralEarningArrayList = referralEarningArrayList;
     }
 
@@ -41,8 +41,8 @@ public class ReferralEarningAdapter
 
         setAnimation(holder.itemView.getContext(), holder.itemView);
 
-        holder.friendName.setText(referralEarningArrayList.get(position).getFriendsName());
-        holder.referralEarning.setText(referralEarningArrayList.get(position).getEarning());
+        holder.friendName.setText(referralEarningArrayList.get(position).getName());
+        holder.referralEarning.setText(referralEarningArrayList.get(position).getBalance());
 
     }
 

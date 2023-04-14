@@ -225,11 +225,13 @@ public class ApiBackendProvider {
         return isWithdrawRequestSuccessful.get();
     }
 
-    private ArrayList<Friend> getReferredFriendList(String referralCode) {
+    public ArrayList<Friend> getReferredFriendList(String referralCode) {
 
         ArrayList<Friend> referredFriendArrayList = new ArrayList<>();
 
         RequestQueue queue = Volley.newRequestQueue(context);
+
+        Log.d(TAG, "getReferredFriendList: Referral code in api backend " + referralCode);
 
         StringRequest request = new StringRequest(Request.Method.POST,
                 ApiConstants.BASE_URL + ApiConstants.LIST_REFER_FRIENDS,
@@ -250,6 +252,8 @@ public class ApiBackendProvider {
                                         gson.fromJson(friendJSONArray.get(i).toString()
                                                 , Friend.class)
                                 );
+
+                                Log.d(TAG, "getReferredFriendList: Adding friends in array list");
 
                             }
 
