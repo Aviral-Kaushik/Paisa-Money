@@ -2,86 +2,111 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-
-    </data>
-
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/layout_referral"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#FFFBF4"
-        android:orientation="vertical"
-        android:id="@+id/refer_code_layout">
+        tools:context=".ReferralCodeActivity">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="25dp"
+            android:contentDescription="@string/back"
+            android:src="@drawable/ic_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Refer Code"
-            android:fontFamily="@font/inter"
-            android:layout_gravity="center"
-            android:textColor="@color/black_70"
-            android:textSize="20sp"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="25dp"
+            android:fontFamily="@font/lato_bold"
+            android:gravity="center"
+            android:text="@string/refer_code"
+            android:textColor="#313651"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_referral_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="50dp"
+            android:fontFamily="@font/lato_bold"
+            android:gravity="center"
+            android:text="@string/refer_code_optional"
+            android:textColor="#80313651"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/back" />
 
         <EditText
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
+            android:id="@+id/referrer_refer_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/refer_code_bg"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginEnd="25dp"
+            android:background="@drawable/referral_code_text_field_background"
+            android:fontFamily="@font/lato_regular"
+            android:importantForAutofill="no"
+            android:inputType="textCapSentences"
+            android:maxLines="2"
             android:padding="12dp"
-            android:textColorHint="@color/black_70"
-            android:hint="Refer Code (optional)"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:maxLines="2"
-            android:id="@+id/referrer_refer_code"
-            android:textColor="@color/black"
-            android:fontFamily="@font/lato_regular"
-            android:inputType="textCapSentences"
-            android:layout_marginTop="35dp" />
+            android:textColor="#313651"
+            android:textColorHint="@color/black_70"
+            android:textSize="35sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_referral_code" />
 
-        <RelativeLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/register"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="50dp"
+            app:cardBackgroundColor="@color/balance_background"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/register"
-                android:layout_alignParentBottom="true"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                app:cardBackgroundColor="@color/balance_background"
-                android:layout_marginStart="30dp"
-                android:layout_marginEnd="30dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp">
+                android:layout_height="match_parent">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:id="@+id/continue_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="Continue"
-                        android:textAllCaps="true"
-                        android:textColor="@color/white"
-                        android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/continue_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="Continue"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="14sp" />
 
-                    <ProgressBar
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_centerInParent="true"
-                        android:indeterminateTint="@color/white"
-                        android:id="@+id/progress_bar"
-                        android:visibility="gone" />
-                </RelativeLayout>
-
-            </androidx.cardview.widget.CardView>
-        </RelativeLayout>
-
-    </LinearLayout>
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_centerInParent="true"
+                    android:indeterminateTint="@color/white"
+                    android:visibility="gone" />
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

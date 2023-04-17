@@ -23,23 +23,17 @@ import java.util.Objects;
 
 public class WonPriceClaimDialog extends DialogFragment {
 
-    private final Context context;
     private final String wonAmount;
-    private final UserData userData;
 
-    private View view;
-
-    public WonPriceClaimDialog(Context context, String wonAmount, UserData userData) {
-        this.context = context;
+    public WonPriceClaimDialog(String wonAmount) {
         this.wonAmount = wonAmount;
-        this.userData = userData;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.layout_won_price_dialog, container, false);
+        View view = inflater.inflate(R.layout.layout_won_price_dialog, container, false);
 
         ConstraintLayout wonPriceClaimed = view.findViewById(R.id.wonPrice);
 
@@ -47,12 +41,7 @@ public class WonPriceClaimDialog extends DialogFragment {
 
         Objects.requireNonNull(getDialog()).getWindow().getAttributes().windowAnimations = android.R.anim.fade_in;
 
-        wonPriceClaimed.setOnClickListener(view1 -> {
-
-            updateUserBalance();
-
-            dismiss();
-        });
+        wonPriceClaimed.setOnClickListener(view1 -> dismiss());
 
         TextView amount = view.findViewById(R.id.tv_amount);
         amount.setText(wonAmount);
@@ -60,33 +49,6 @@ public class WonPriceClaimDialog extends DialogFragment {
         return view;
     }
 
-    private void updateUserBalance() {
-
-        ApiBackendProvider backendProvider = new ApiBackendProvider(context);
-
-        boolean isBalanceUpdatedSuccessfully = backendProvider.updateUserBalance(
-                userData.getUid(),
-                wonAmount.substring(1)
-        );
-
-        Snackbar snackbar;
-        if (isBalanceUpdatedSuccessfully) {
-            snackbar = Snackbar.make(view,
-                    "Your balance Updated Successfully",
-                    Snackbar.LENGTH_SHORT);
-
-        } else {
-            snackbar = Snackbar.make(view,
-                    "Cannot update your balance at this moment",
-                    Snackbar.LENGTH_SHORT);
-        }
-        snackbar.show();
-
-
-        Intent intent = new Intent(context, MainActivity.class);
-        startActivity(intent);
-
-    }
 
 
 }

@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.aviral.eaa1.Models.Options;
@@ -82,7 +81,7 @@ public class OptionsRecyclerViewAdapter
         private final ImageView optionImage;
         private final TextView optionTitle;
         private final TextView chances;
-        private final AppCompatButton optionButton;
+        private final TextView optionButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

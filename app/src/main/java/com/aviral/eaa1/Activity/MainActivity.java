@@ -3,7 +3,6 @@ package com.aviral.eaa1.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -24,34 +23,22 @@ import com.aviral.eaa1.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding binding;
-
     private UserData userData;
 
     private Bundle userDataBundle;
 
     private LoadingDialog loadingDialog;
 
-    private Context context;
-
-    // Z1VTJJ
-    // zaviralkaushik@gmail.com
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        context = MainActivity.this;
 
         loadingDialog = new LoadingDialog(this);
         loadingDialog.show();
 
         userDataBundle = new Bundle();
-
-//        FetchUserData fetchUserData = new FetchUserData();
-//        fetchUserData.execute();
 
     }
 
@@ -72,55 +59,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class FetchUserData extends AsyncTask<Void, Void, Void> {
-
-        String email;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-            SharedPreferences sharedPreferences = getSharedPreferences("Check", Context.MODE_PRIVATE);
-            boolean isL = sharedPreferences.getBoolean("isLoggedIn", false);
-            Log.d("AviralAPI", "onStart: isL " + isL);
-            if (!isL) {
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                finish();
-            } else {
-                email = sharedPreferences.getString("email", "");
-            }
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            ApiBackendProvider backendProvider = new ApiBackendProvider(context);
-
-            userData = backendProvider.fetchUserData(email);
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void unused) {
-            super.onPostExecute(unused);
-
-            loadingDialog.dismiss();
-
-            Bundle userDataBundle = new Bundle();
-            userDataBundle.putParcelable(getString(R.string.user_data), userData);
-
-            EarnMoneyFragment earnMoneyFragment = new EarnMoneyFragment();
-            earnMoneyFragment.setArguments(userDataBundle);
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.main_container, earnMoneyFragment);
-            fragmentTransaction.commit();
-            setUpBottomNavigation();
-        }
-    }
-
-
-
     private void fetchUserData(String email) {
 
         ApiBackendProvider backendProvider = new ApiBackendProvider(this);
@@ -138,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
             earnMoneyFragment.setArguments(userDataBundle);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.main_container, earnMoneyFragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.commitAllowingStateLoss();
             setUpBottomNavigation();
         });
 

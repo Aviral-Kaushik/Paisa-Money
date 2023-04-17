@@ -11,13 +11,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.aviral.eaa1.Models.Friend;
-import com.aviral.eaa1.Models.RegisterUser;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.Models.WithdrawRequest;
-import com.google.gson.Gson;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -223,79 +219,6 @@ public class ApiBackendProvider {
         queue.add(request);
 
         return isWithdrawRequestSuccessful.get();
-    }
-
-    public ArrayList<Friend> getReferredFriendList(String referralCode) {
-
-        ArrayList<Friend> referredFriendArrayList = new ArrayList<>();
-
-        RequestQueue queue = Volley.newRequestQueue(context);
-
-        Log.d(TAG, "getReferredFriendList: Referral code in api backend " + referralCode);
-
-        StringRequest request = new StringRequest(Request.Method.POST,
-                ApiConstants.BASE_URL + ApiConstants.LIST_REFER_FRIENDS,
-                response -> {
-
-                    try {
-                        JSONObject jsonObject = new JSONObject(response);
-
-                        if (jsonObject.getString("message").equals("Found")) {
-
-                            JSONArray friendJSONArray = jsonObject.getJSONArray("Friends");
-
-                            for(int i = 0; i < friendJSONArray.length(); i++) {
-
-                                Gson gson = new Gson();
-
-                                referredFriendArrayList.add(
-                                        gson.fromJson(friendJSONArray.get(i).toString()
-                                                , Friend.class)
-                                );
-
-                                Log.d(TAG, "getReferredFriendList: Adding friends in array list");
-
-                            }
-
-                        }
-
-
-                    } catch (JSONException e) {
-                        Log.d(TAG, "checkForEmailRegistration: Exception Occurred while api call " + e.getMessage());
-                    }
-
-                    Log.d(TAG, response);
-                }, error -> Log.d(TAG, error.toString())) {
-
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded; charset=" + getParamsEncoding();
-            }
-
-            @Override
-            protected String getParamsEncoding() {
-                return "UTF-8";
-            }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String,String> params = new HashMap<>();
-                params.put("Content-Type","application/x-www-form-urlencoded");
-                return params;
-            }
-
-            @NonNull
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> postData = new HashMap<>();
-                postData.put("referral_code", referralCode);
-                return postData;
-            }
-        };
-
-        queue.add(request);
-
-        return referredFriendArrayList;
     }
 
     public ArrayList<String> getAllLinks() {

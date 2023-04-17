@@ -26,8 +26,6 @@ import com.aviral.eaa1.Utils.TokenPreference;
 import com.aviral.eaa1.Utils.UpdateToken;
 import com.aviral.eaa1.databinding.ReferCodeDesignBinding;
 
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 

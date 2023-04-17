@@ -27,7 +27,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -37,13 +36,11 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
-    private LoginActivityBinding binding;
-    boolean checked = false;
     LoadingDialog dialog;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = LoginActivityBinding.inflate(getLayoutInflater());
+        LoginActivityBinding binding = LoginActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         dialog = new LoadingDialog(this);

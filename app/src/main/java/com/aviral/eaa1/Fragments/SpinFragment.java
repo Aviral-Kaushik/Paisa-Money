@@ -3,6 +3,7 @@ package com.aviral.eaa1.Fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,12 @@ import android.view.animation.RotateAnimation;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
+import com.aviral.eaa1.Utils.ApiBackendProvider;
 import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.databinding.FragmentSpinBinding;
 import com.google.android.material.snackbar.Snackbar;
@@ -40,6 +43,8 @@ public class SpinFragment extends Fragment {
 
     private LoadingDialog loadingDialog;
 
+    private ApiBackendProvider backendProvider;
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -47,6 +52,8 @@ public class SpinFragment extends Fragment {
         binding = FragmentSpinBinding.inflate(inflater, container, false);
 
         userData = requireArguments().getParcelable(requireContext().getString(R.string.user_data));
+
+        backendProvider = new ApiBackendProvider(requireContext());
 
         View view = binding.getRoot();
 
@@ -121,10 +128,9 @@ public class SpinFragment extends Fragment {
 
                 decrementChances();
 
-                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
-                        requireContext(),
-                        "₹" + earnedAmount,
-                        userData);
+                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog("₹" + earnedAmount);
+
+                updateUserBalance(earnedAmount);
 
                 wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
             }
@@ -136,6 +142,43 @@ public class SpinFragment extends Fragment {
         });
 
         binding.spinningWheel.startAnimation(rotateAnimation);
+
+    }
+
+    private void updateUserBalance(double earnedAmount) {
+
+        backendProvider.updateUserBalance(
+                userData.getUid(),
+                String.valueOf(earnedAmount)
+        );
+
+        fetchUserData(userData.getEmail());
+
+    }
+
+    private void fetchUserData(String email) {
+
+        userData = backendProvider.fetchUserData(email);
+
+        new Handler().postDelayed(() -> {
+            loadingDialog.dismiss();
+
+            Bundle userDataBundle = new Bundle();
+            userDataBundle.putParcelable(getString(R.string.user_data), userData);
+
+            SpinFragment spinFragment = new SpinFragment();
+            spinFragment.setArguments(userDataBundle);
+            FragmentTransaction fragmentTransaction = getParentFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in,
+                            R.anim.fade_out,
+                            R.anim.fade_in,
+                            R.anim.slide_out
+                    );
+            fragmentTransaction.replace(R.id.main_container, spinFragment);
+            fragmentTransaction.commit();
+        }, 2000);
 
     }
 

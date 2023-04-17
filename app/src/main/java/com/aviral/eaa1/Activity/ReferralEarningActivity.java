@@ -2,7 +2,6 @@ package com.aviral.eaa1.Activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -18,7 +17,6 @@ import com.aviral.eaa1.Adapter.ReferralEarningAdapter;
 import com.aviral.eaa1.Models.Friend;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
-import com.aviral.eaa1.Utils.ApiBackendProvider;
 import com.aviral.eaa1.Utils.ApiConstants;
 import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.databinding.ActivityReferralEarningBinding;
@@ -40,7 +38,6 @@ public class ReferralEarningActivity extends AppCompatActivity {
 
     private LoadingDialog loadingDialog;
 
-    private UserData userData;
     private Context context;
 
     private ArrayList<Friend> friendArrayList;
@@ -51,7 +48,7 @@ public class ReferralEarningActivity extends AppCompatActivity {
         binding = ActivityReferralEarningBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        userData = new UserData();
+        UserData userData = new UserData();
         context = ReferralEarningActivity.this;
 
         friendArrayList = new ArrayList<>();
@@ -77,7 +74,6 @@ public class ReferralEarningActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(context);
 
         Log.d(TAG, "getReferredFriendList: Referral code in api backend " + referralCode);
-
         StringRequest request = new StringRequest(Request.Method.POST,
                 ApiConstants.BASE_URL + ApiConstants.LIST_REFER_FRIENDS,
                 response -> {
@@ -114,19 +110,25 @@ public class ReferralEarningActivity extends AppCompatActivity {
 
                     Log.d(TAG, response);
 
-                    LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context,
-                            LinearLayoutManager.VERTICAL, false);
-
-                    binding.referralEarningRecyclerView.setLayoutManager(linearLayoutManager);
-
-                    ReferralEarningAdapter referralEarningAdapter =
-                            new ReferralEarningAdapter(friendArrayList);
-
-                    binding.referralEarningRecyclerView.setAdapter(referralEarningAdapter);
-
                     loadingDialog.dismiss();
 
-                    binding.friendsJoined.setText(String.valueOf(friendArrayList.size()));
+                    if (friendArrayList.size() > 0) {
+
+                        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context,
+                                LinearLayoutManager.VERTICAL, false);
+
+                        binding.referralEarningRecyclerView.setLayoutManager(linearLayoutManager);
+
+                        ReferralEarningAdapter referralEarningAdapter =
+                                new ReferralEarningAdapter(friendArrayList);
+
+                        binding.referralEarningRecyclerView.setAdapter(referralEarningAdapter);
+
+                        loadingDialog.dismiss();
+
+                        binding.friendsJoined.setText(String.valueOf(friendArrayList.size()));
+
+                    }
 
                 }, error -> Log.d(TAG, error.toString())) {
 

@@ -43,6 +43,7 @@ public class WithdrawActivity extends AppCompatActivity {
                 INRTODollar(Double.parseDouble(userData.getBalance()))));
 
         binding.userName.setText(userData.getName());
+        binding.tvUserName.setText(userData.getName());
 
         binding.payapalAmount.setText(String.format("$%s", INRTODollar(Double.parseDouble(userData.getBalance()))));
         binding.paytmAmount.setText(String.format("₹%s", userData.getBalance()));
@@ -210,7 +211,14 @@ public class WithdrawActivity extends AppCompatActivity {
 
         DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-        return Double.parseDouble(decimalFormat.format(inr * exchangeRate));
+        String decimalValue = decimalFormat.format(inr * exchangeRate);
+
+        if (decimalValue.endsWith("0")) {
+            decimalFormat.applyPattern("#.#");
+            decimalValue = decimalFormat.format(inr * exchangeRate);
+        }
+
+        return Double.parseDouble(decimalValue);
     }
 
     private void showSnackBar(String message) {

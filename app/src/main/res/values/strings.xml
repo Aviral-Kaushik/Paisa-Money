@@ -64,4 +64,9 @@
     <string name="user_data">user_data</string>
     <string name="withdraw_amount">Withdraw Amount</string>
     <string name="refresh_user_data">Refresh User Data</string>
+    <string name="back">Back</string>
+    <string name="refer_code">Refer Code</string>
+    <string name="refer_code_optional">Refer Code (Optional)</string>
+    <string name="continue1">CONTINUE</string>
+    <string name="login_button">login Button</string>
 </resources>
