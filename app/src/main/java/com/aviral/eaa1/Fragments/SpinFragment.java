@@ -13,7 +13,6 @@ import android.view.animation.RotateAnimation;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
 import com.aviral.eaa1.Models.UserData;
@@ -60,13 +59,25 @@ public class SpinFragment extends Fragment {
         loadingDialog = new LoadingDialog(requireContext());
         loadingDialog.show();
 
-        binding.btnBalance.setText(userData.getBalance());
+        binding.btnBalance.setText(String.format("₹%s", userData.getBalance()));
 
         getChances();
+
+//        updateChances();
 
         binding.btnSpin.setOnSlideCompleteListener(slideToActView -> startSpin());
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        loadingDialog.show();
+
+        fetchUserData();
+
     }
 
     private void getChances() {
@@ -80,6 +91,22 @@ public class SpinFragment extends Fragment {
         }
 
         loadingDialog.dismiss();
+
+    }
+
+    private void fetchUserData() {
+
+        ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
+
+        UserData updatedUserData = backendProvider.fetchUserData(userData.getEmail());
+
+        new Handler().postDelayed(() -> {
+            loadingDialog.dismiss();
+
+            binding.btnBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
+        }, 2000);
+
+        userData = updatedUserData;
 
     }
 
@@ -128,6 +155,10 @@ public class SpinFragment extends Fragment {
 
                 decrementChances();
 
+                binding.btnBalance.setText(String.format("₹%s",
+                        Double.parseDouble(userData.getBalance())
+                        + earnedAmount));
+
                 WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog("₹" + earnedAmount);
 
                 updateUserBalance(earnedAmount);
@@ -152,34 +183,14 @@ public class SpinFragment extends Fragment {
                 String.valueOf(earnedAmount)
         );
 
-        fetchUserData(userData.getEmail());
-
     }
 
-    private void fetchUserData(String email) {
+    private void updateChances() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("scratchChances", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        userData = backendProvider.fetchUserData(email);
-
-        new Handler().postDelayed(() -> {
-            loadingDialog.dismiss();
-
-            Bundle userDataBundle = new Bundle();
-            userDataBundle.putParcelable(getString(R.string.user_data), userData);
-
-            SpinFragment spinFragment = new SpinFragment();
-            spinFragment.setArguments(userDataBundle);
-            FragmentTransaction fragmentTransaction = getParentFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_in,
-                            R.anim.fade_out,
-                            R.anim.fade_in,
-                            R.anim.slide_out
-                    );
-            fragmentTransaction.replace(R.id.main_container, spinFragment);
-            fragmentTransaction.commit();
-        }, 2000);
-
+        editor.putInt("chancesLeft", 10);
+        editor.apply();
     }
 
     private void decrementChances() {

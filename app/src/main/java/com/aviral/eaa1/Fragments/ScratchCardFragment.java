@@ -5,14 +5,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.anupkumarpanwar.scratchview.ScratchView;
 import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
@@ -21,6 +19,7 @@ import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
 import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.databinding.FragmentScratchCardBinding;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Random;
 
@@ -53,9 +52,13 @@ public class ScratchCardFragment extends Fragment {
 
         binding.amountWon.setText(String.format("₹%s", generateRandomNumber()));
 
-        binding.btnBalance.setText(userData.getBalance());
+        binding.btnBalance.setText(String.format("₹%s", userData.getBalance()));
 
         getChances();
+
+//        updateChances();
+
+//        fetchUserData();
 
         binding.scratchCard.setRevealListener(new ScratchView.IRevealListener() {
             @Override
@@ -65,6 +68,10 @@ public class ScratchCardFragment extends Fragment {
                 decrementChances();
 
                 updateUserBalance(binding.amountWon.getText().toString().substring(1));
+
+                binding.btnBalance.setText(String.format("₹%s",
+                        Double.parseDouble(userData.getBalance())
+                                + Double.parseDouble(binding.amountWon.getText().toString().substring(1))));
 
                 WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(binding.amountWon.getText().toString());
 
@@ -81,38 +88,35 @@ public class ScratchCardFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadingDialog.show();
+
+        fetchUserData();
+    }
+
+    private void fetchUserData() {
+
+        ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
+
+        UserData updatedUserData = backendProvider.fetchUserData(userData.getEmail());
+
+        new Handler().postDelayed(() -> {
+            loadingDialog.dismiss();
+            binding.btnBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
+        }, 2000);
+
+        userData = updatedUserData;
+
+    }
+
     private void updateUserBalance(String earnedAmount) {
 
         backendProvider.updateUserBalance(
                 userData.getUid(),
                 String.valueOf(earnedAmount)
         );
-
-        fetchUserData(userData.getEmail());
-    }
-
-    private void fetchUserData(String email) {
-        userData = backendProvider.fetchUserData(email);
-
-        new Handler().postDelayed(() -> {
-            loadingDialog.dismiss();
-
-            Bundle userDataBundle = new Bundle();
-            userDataBundle.putParcelable(getString(R.string.user_data), userData);
-
-            ScratchCardFragment scratchCardFragment = new ScratchCardFragment();
-            scratchCardFragment.setArguments(userDataBundle);
-            FragmentTransaction fragmentTransaction = getParentFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_in,
-                            R.anim.fade_out,
-                            R.anim.fade_in,
-                            R.anim.slide_out
-                    );
-            fragmentTransaction.replace(R.id.main_container, scratchCardFragment);
-            fragmentTransaction.commit();
-        }, 2000);
 
     }
 
@@ -149,6 +153,14 @@ public class ScratchCardFragment extends Fragment {
             editor.apply();
         }
 
+    }
+
+    private void updateChances() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("scratchChances", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putInt("chancesLeft", 10);
+        editor.apply();
     }
 
     private double generateRandomNumber() {

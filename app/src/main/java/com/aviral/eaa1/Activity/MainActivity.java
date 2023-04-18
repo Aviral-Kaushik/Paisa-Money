@@ -92,11 +92,9 @@ public class MainActivity extends AppCompatActivity {
         userDataBundle.putParcelable(getString(R.string.user_data), userData);
 
         LinearLayout btnEarnMoney = findViewById(R.id.btnEarnMoney);
-        LinearLayout btnScratchCard = findViewById(R.id.btnScratchCard);
-        LinearLayout btnSpin = findViewById(R.id.btnSpin);
-        LinearLayout btnProfile = findViewById(R.id.btnProfile);
-
-
+        LinearLayout btnScratchCard = findViewById(R.id.btnBottomScratchCard);
+        LinearLayout btnSpin = findViewById(R.id.btnBottomSpin);
+        LinearLayout btnProfile = findViewById(R.id.btnBottomProfile);
 
         btnEarnMoney.setOnClickListener(view -> {
             EarnMoneyFragment earnMoneyFragment = new EarnMoneyFragment();
@@ -109,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
                             R.anim.fade_in,
                             R.anim.slide_out
                     );
+            fragmentTransaction.attach(earnMoneyFragment);
+            fragmentTransaction.detach(earnMoneyFragment);
+            fragmentTransaction.attach(earnMoneyFragment);
             fragmentTransaction.replace(R.id.main_container, earnMoneyFragment);
             fragmentTransaction.commit();
         });
@@ -124,6 +125,9 @@ public class MainActivity extends AppCompatActivity {
                             R.anim.fade_in,
                             R.anim.slide_out
                     );
+            fragmentTransaction.attach(scratchCardFragment);
+            fragmentTransaction.detach(scratchCardFragment);
+            fragmentTransaction.attach(scratchCardFragment);
             fragmentTransaction.replace(R.id.main_container, scratchCardFragment);
             fragmentTransaction.commit();
         });
@@ -139,6 +143,9 @@ public class MainActivity extends AppCompatActivity {
                             R.anim.fade_in,
                             R.anim.slide_out
                     );
+            fragmentTransaction.attach(spinFragment);
+            fragmentTransaction.detach(spinFragment);
+            fragmentTransaction.attach(spinFragment);
             fragmentTransaction.replace(R.id.main_container, spinFragment);
             fragmentTransaction.commit();
         });
@@ -155,6 +162,9 @@ public class MainActivity extends AppCompatActivity {
                             R.anim.fade_in,
                             R.anim.slide_out
                     );
+            fragmentTransaction.attach(profileFragment);
+            fragmentTransaction.detach(profileFragment);
+            fragmentTransaction.attach(profileFragment);
             fragmentTransaction.replace(R.id.main_container, profileFragment);
             fragmentTransaction.commit();
         });

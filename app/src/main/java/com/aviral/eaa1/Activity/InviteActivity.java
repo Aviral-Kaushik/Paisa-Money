@@ -35,7 +35,7 @@ public class InviteActivity extends AppCompatActivity {
         }
 
         binding.referralCode.setText(userData.getReferralCode());
-        binding.btnBalance.setText(userData.getBalance());
+        binding.btnBalance.setText(String.format("₹%s", userData.getBalance()));
 
         binding.shareWhatsapp.setOnClickListener(view -> sendWhatsappMessage());
         binding.shareTelegram.setOnClickListener(view -> sendTelegramMessage());

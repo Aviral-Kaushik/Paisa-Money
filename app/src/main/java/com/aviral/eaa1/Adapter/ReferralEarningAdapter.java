@@ -42,7 +42,7 @@ public class ReferralEarningAdapter
         setAnimation(holder.itemView.getContext(), holder.itemView);
 
         holder.friendName.setText(referralEarningArrayList.get(position).getName());
-        holder.referralEarning.setText(referralEarningArrayList.get(position).getBalance());
+        holder.referralEarning.setText(String.format("₹%s", referralEarningArrayList.get(position).getBalance()));
 
     }
 

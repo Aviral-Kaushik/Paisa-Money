@@ -3,6 +3,7 @@ package com.aviral.eaa1.Fragments;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.ScrollView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.aviral.eaa1.Adapter.OptionsRecyclerViewAdapter;
@@ -18,6 +20,7 @@ import com.aviral.eaa1.Models.Options;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
+import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.Utils.RecyclerViewMargin;
 import com.aviral.eaa1.Activity.WithdrawActivity;
 import com.aviral.eaa1.databinding.EarnMoneyFragmentBinding;
@@ -30,6 +33,8 @@ public class EarnMoneyFragment extends Fragment {
 
     private UserData userData;
 
+    private LoadingDialog loadingDialog;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -40,8 +45,19 @@ public class EarnMoneyFragment extends Fragment {
 
         userData = requireArguments().getParcelable(requireContext().getString(R.string.user_data));
 
-        binding.walletBalance.setText(userData.getBalance());
-        binding.btnBalance.setText(userData.getBalance());
+//        ApiBackendProviderkendProvider backendProvider = new ApiBackendProvider(requireContext());
+//
+//        UserData updatedUseData = backendProvider.fetchUserData(userData.getEmail());
+//
+//        new Handler().postDelayed(() -> {
+//
+//            binding.walletBalance.setText(String.format("₹%s", updatedUseData.getBalance()));
+//            binding.btnBalance.setText(String.format("₹%s", updatedUseData.getBalance()));
+//
+//        }, 2000);
+
+        binding.walletBalance.setText(String.format("₹%s", userData.getBalance()));
+        binding.btnBalance.setText(String.format("₹%s", userData.getBalance()));
 
         View view = binding.getRoot();
 
@@ -50,6 +66,8 @@ public class EarnMoneyFragment extends Fragment {
         setUpOptionAdapter();
 
         ArrayList<String> links;
+
+        loadingDialog = new LoadingDialog(requireContext());
 
         ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
         links = backendProvider.getAllLinks();
@@ -73,6 +91,33 @@ public class EarnMoneyFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        loadingDialog.show();
+
+        fetchUserData();
+    }
+
+    private void fetchUserData() {
+
+        ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
+
+        UserData updatedUserData = backendProvider.fetchUserData(userData.getEmail());
+
+        new Handler().postDelayed(() -> {
+
+            loadingDialog.dismiss();
+
+            binding.walletBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
+            binding.btnBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
+        }, 2000);
+
+
+        userData = updatedUserData;
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
@@ -80,6 +125,8 @@ public class EarnMoneyFragment extends Fragment {
 
     private void openUrl(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setPackage("com.android.chrome");
         startActivity(intent);
     }
 
