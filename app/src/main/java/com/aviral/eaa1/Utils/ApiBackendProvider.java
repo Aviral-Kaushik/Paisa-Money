@@ -164,6 +164,10 @@ public class ApiBackendProvider {
 
         RequestQueue queue = Volley.newRequestQueue(context);
 
+        if (withdrawRequest.getAmount() > 100) {
+            withdrawRequest.setAmount(100);
+        }
+
         StringRequest request = new StringRequest(Request.Method.POST,
                 ApiConstants.BASE_URL + ApiConstants.WITHDRAW_REQUEST,
                 response -> {

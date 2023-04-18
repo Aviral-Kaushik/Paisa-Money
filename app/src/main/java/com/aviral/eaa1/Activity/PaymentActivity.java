@@ -82,7 +82,7 @@ public class PaymentActivity extends AppCompatActivity {
             );
 
             Snackbar snackbar;
-            if (isWithdrawRequestSuccessful) {
+            if (!isWithdrawRequestSuccessful) {
                 snackbar = Snackbar.make(binding.layoutPayment,
                         "Your withdraw request has been successfully placed",
                         Snackbar.LENGTH_SHORT);

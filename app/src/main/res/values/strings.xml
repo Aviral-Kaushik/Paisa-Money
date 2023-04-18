@@ -69,4 +69,9 @@
     <string name="refer_code_optional">Refer Code (Optional)</string>
     <string name="continue1">CONTINUE</string>
     <string name="login_button">login Button</string>
+    <string name="ludo">Ludo</string>
+    <string name="chess">Chess</string>
+    <string name="pubg">Pubg</string>
+    <string name="puzzle">Puzzle</string>
+    <string name="card">CARD</string>
 </resources>

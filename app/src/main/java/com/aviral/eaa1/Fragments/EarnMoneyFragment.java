@@ -1,6 +1,7 @@
 package com.aviral.eaa1.Fragments;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.aviral.eaa1.Adapter.OptionsRecyclerViewAdapter;
 import com.aviral.eaa1.Models.Options;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
+import com.aviral.eaa1.Utils.ApiBackendProvider;
 import com.aviral.eaa1.Utils.RecyclerViewMargin;
 import com.aviral.eaa1.Activity.WithdrawActivity;
 import com.aviral.eaa1.databinding.EarnMoneyFragmentBinding;
@@ -47,6 +49,18 @@ public class EarnMoneyFragment extends Fragment {
 
         setUpOptionAdapter();
 
+        ArrayList<String> links;
+
+        ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
+        links = backendProvider.getAllLinks();
+
+        ArrayList<String> finalLinks = links;
+        binding.ludo.setOnClickListener(view1 -> openUrl(finalLinks.get(1)));
+        binding.chess.setOnClickListener(view1 -> openUrl(finalLinks.get(2)));
+        binding.pubg.setOnClickListener(view1 -> openUrl(finalLinks.get(3)));
+        binding.puzzle.setOnClickListener(view1 -> openUrl(finalLinks.get(4)));
+        binding.card.setOnClickListener(view1 -> openUrl(finalLinks.get(5)));
+
         binding.buttonWithdraw.setOnClickListener(view1 -> {
 
             Intent intent = new Intent(getContext(), WithdrawActivity.class);
@@ -64,15 +78,13 @@ public class EarnMoneyFragment extends Fragment {
         binding = null;
     }
 
+    private void openUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
+    }
+
     private void setUpOptionAdapter() {
         ArrayList<Options> optionsArrayList = new ArrayList<>();
-
-        optionsArrayList.add(new Options(
-                R.drawable.ic_rate,
-                "Rate 5 Star & Earn Money",
-                1,
-                "₹10.00"
-        ));
 
         optionsArrayList.add(new Options(
                 R.drawable.ic_daily,

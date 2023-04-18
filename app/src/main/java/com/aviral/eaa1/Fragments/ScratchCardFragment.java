@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -128,13 +129,9 @@ public class ScratchCardFragment extends Fragment {
 
             binding.scratchCard.setEraserMode();
 
-            binding.gift.setVisibility(View.GONE);
-            binding.congratulations.setVisibility(View.GONE);
-            binding.amountWon.setVisibility(View.GONE);
-            binding.tvYouWon.setVisibility(View.GONE);
             binding.scratchCard.setVisibility(View.GONE);
+            binding.scratchImage.setVisibility(View.VISIBLE);
 
-//            Snackbar.make(view.findViewById(android.R.id.content), "You Cannot Scratch Card as 0 Chances Left", Snackbar.LENGTH_LONG).show();
 
             Toast.makeText(requireContext(), "0 Chances Left", Toast.LENGTH_SHORT).show();
         }

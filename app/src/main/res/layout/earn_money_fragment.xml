@@ -111,101 +111,132 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:weightSum="5">
+
                     <LinearLayout
+                        android:id="@+id/ludo"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_ludo"/>
+                            android:src="@drawable/ic_ludo"
+                            android:contentDescription="@string/ludo"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Ludo"
+                            android:text="@string/ludo"
                             android:fontFamily="@font/lato_regular"
                             android:textSize="12sp"
                             android:textColor="@color/black_70"
                             android:layout_marginTop="5dp"/>
+
                     </LinearLayout>
+
                     <LinearLayout
+                        android:id="@+id/chess"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_chess"/>
+                            android:src="@drawable/ic_chess"
+                            android:contentDescription="@string/chess"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Chess"
+                            android:text="@string/chess"
                             android:fontFamily="@font/lato_regular"
                             android:textSize="12sp"
                             android:textColor="@color/black_70"
                             android:layout_marginTop="5dp"/>
+
                     </LinearLayout>
+
                     <LinearLayout
+                        android:id="@+id/pubg"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_pubg"/>
+                            android:src="@drawable/ic_pubg"
+                            android:contentDescription="@string/pubg"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Pubg"
+                            android:text="@string/pubg"
                             android:fontFamily="@font/lato_regular"
                             android:textSize="12sp"
                             android:textColor="@color/black_70"
                             android:layout_marginTop="5dp"/>
+
                     </LinearLayout>
+
                     <LinearLayout
+                        android:id="@+id/puzzle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_puzzle"/>
+                            android:src="@drawable/ic_puzzle"
+                            android:contentDescription="@string/puzzle"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Puzzle"
+                            android:text="@string/puzzle"
                             android:fontFamily="@font/lato_regular"
                             android:textSize="12sp"
                             android:textColor="@color/black_70"
                             android:layout_marginTop="5dp"/>
+
                     </LinearLayout>
+
                     <LinearLayout
+                        android:id="@+id/card"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_card"/>
+                            android:src="@drawable/ic_card"
+                            android:contentDescription="@string/card"/>
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="CARD"
+                            android:text="@string/card"
                             android:fontFamily="@font/lato_regular"
                             android:textSize="12sp"
                             android:textColor="@color/black_70"
                             android:layout_marginTop="5dp"/>
+
                     </LinearLayout>
+
                 </LinearLayout>
 
                 <androidx.recyclerview.widget.RecyclerView
