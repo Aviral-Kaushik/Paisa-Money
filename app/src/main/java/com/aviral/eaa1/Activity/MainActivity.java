@@ -46,8 +46,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
         SharedPreferences sharedPreferences = getSharedPreferences("Check", Context.MODE_PRIVATE);
         boolean isL = sharedPreferences.getBoolean("isLoggedIn", false);
+
         Log.d("AviralAPI", "onStart: isL " + isL);
         if (!isL) {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));

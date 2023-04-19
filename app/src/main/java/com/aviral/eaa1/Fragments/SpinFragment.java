@@ -13,6 +13,7 @@ import android.view.animation.RotateAnimation;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
 import com.aviral.eaa1.Models.UserData;
@@ -81,7 +82,7 @@ public class SpinFragment extends Fragment {
     }
 
     private void getChances() {
-        SharedPreferences chancesPreferences = requireActivity().getSharedPreferences("spinChances", Context.MODE_PRIVATE);
+        SharedPreferences chancesPreferences = requireContext().getSharedPreferences("spinChances", Context.MODE_PRIVATE);
         chancesLeft = chancesPreferences.getInt("chancesLeft", 10);
 
         if (chancesLeft > 1) {
@@ -98,15 +99,9 @@ public class SpinFragment extends Fragment {
 
         ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
 
-        UserData updatedUserData = backendProvider.fetchUserData(userData.getEmail());
+        userData = backendProvider.fetchUserData(userData.getEmail());
 
-        new Handler().postDelayed(() -> {
-            loadingDialog.dismiss();
-
-            binding.btnBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
-        }, 2000);
-
-        userData = updatedUserData;
+        loadingDialog.dismiss();
 
     }
 
@@ -178,10 +173,32 @@ public class SpinFragment extends Fragment {
 
     private void updateUserBalance(double earnedAmount) {
 
+        loadingDialog.show();
+
         backendProvider.updateUserBalance(
                 userData.getUid(),
                 String.valueOf(earnedAmount)
         );
+
+        new Handler().postDelayed(() -> {
+            loadingDialog.dismiss();
+
+            Bundle userDataBundle = new Bundle();
+            userDataBundle.putParcelable(getString(R.string.user_data), userData);
+
+            SpinFragment spinFragment = new SpinFragment();
+            spinFragment.setArguments(userDataBundle);
+            FragmentTransaction fragmentTransaction = getParentFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in,
+                            R.anim.fade_out,
+                            R.anim.fade_in,
+                            R.anim.slide_out
+                    );
+            fragmentTransaction.replace(R.id.main_container, spinFragment);
+            fragmentTransaction.commit();
+        }, 2000);
 
     }
 

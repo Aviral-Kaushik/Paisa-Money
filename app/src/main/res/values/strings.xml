@@ -74,4 +74,13 @@
     <string name="pubg">Pubg</string>
     <string name="puzzle">Puzzle</string>
     <string name="card">CARD</string>
+    <string name="daily_bonus">Daily Bonus</string>
+    <string name="collect_rewards">Collect Rewards</string>
+    <string name="watch_videos">Watch Videos</string>
+    <string name="gold_points">Gold Points</string>
+    <string name="reward_name_daily_bonus">dailyBonus</string>
+    <string name="reward_name_collect_rewards">collectRewards</string>
+    <string name="reward_name_watch_videos">watchVideos</string>
+    <string name="reward_name_gold_points">goldPoints</string>
+    <string name="chances_left">chancesLeft</string>
 </resources>

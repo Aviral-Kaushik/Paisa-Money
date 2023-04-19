@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.anupkumarpanwar.scratchview.ScratchView;
 import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
@@ -100,23 +101,40 @@ public class ScratchCardFragment extends Fragment {
 
         ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
 
-        UserData updatedUserData = backendProvider.fetchUserData(userData.getEmail());
+        userData = backendProvider.fetchUserData(userData.getEmail());
 
-        new Handler().postDelayed(() -> {
-            loadingDialog.dismiss();
-            binding.btnBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
-        }, 2000);
-
-        userData = updatedUserData;
+        loadingDialog.dismiss();
 
     }
 
     private void updateUserBalance(String earnedAmount) {
 
+        loadingDialog.show();
+
         backendProvider.updateUserBalance(
                 userData.getUid(),
                 String.valueOf(earnedAmount)
         );
+
+        new Handler().postDelayed(() -> {
+            loadingDialog.dismiss();
+
+            Bundle userDataBundle = new Bundle();
+            userDataBundle.putParcelable(getString(R.string.user_data), userData);
+
+            ScratchCardFragment scratchCardFragment = new ScratchCardFragment();
+            scratchCardFragment.setArguments(userDataBundle);
+            FragmentTransaction fragmentTransaction = getParentFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in,
+                            R.anim.fade_out,
+                            R.anim.fade_in,
+                            R.anim.slide_out
+                    );
+            fragmentTransaction.replace(R.id.main_container, scratchCardFragment);
+            fragmentTransaction.commit();
+        }, 2000);
 
     }
 
