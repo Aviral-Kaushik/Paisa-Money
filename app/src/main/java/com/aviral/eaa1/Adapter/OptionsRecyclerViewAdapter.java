@@ -3,6 +3,7 @@ package com.aviral.eaa1.Adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
@@ -26,6 +27,7 @@ import com.aviral.eaa1.Models.EarningOptions;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
 import com.aviral.eaa1.Utils.LoadingDialog;
+import com.aviral.eaa1.Utils.TimeUtils;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -41,16 +43,20 @@ public class OptionsRecyclerViewAdapter
     private final String uid;
     private final OptionChances chances;
 
+    private final RecyclerView recyclerView;
+
     public OptionsRecyclerViewAdapter(Context context,
                                       FragmentManager fragmentManager,
                                       ArrayList<EarningOptions> optionList,
                                       String uid,
-                                      OptionChances chances) {
+                                      OptionChances chances,
+                                      RecyclerView recyclerView) {
         this.context = context;
         this.fragmentManager = fragmentManager;
         this.optionList = optionList;
         this.uid = uid;
         this.chances = chances;
+        this.recyclerView = recyclerView;
     }
 
     @NonNull
@@ -107,6 +113,10 @@ public class OptionsRecyclerViewAdapter
                 wonPriceClaimDialog.show(fragmentManager, "Earned Amount");
 
             });
+        } else {
+
+            checkForChancesRenewal(position, holder.chances, holder.optionButton);
+
         }
 
     }
@@ -167,6 +177,13 @@ public class OptionsRecyclerViewAdapter
 
     }
 
+    private void openUrl(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setPackage("com.android.chrome");
+        context.startActivity(intent);
+    }
+
     private void decrementChances(String rewardName) {
 
         Log.d(TAG, "decrementChances: Decrementing Chances");
@@ -181,11 +198,31 @@ public class OptionsRecyclerViewAdapter
                         context.getString(R.string.reward_name_daily_bonus),
                         Context.MODE_PRIVATE
                 );
+
                 SharedPreferences.Editor dailyBonusEditor = dailyBonus.edit();
-                dailyBonusEditor.putInt(
-                        context.getString(R.string.chances_left),
-                        (chances.getDailyBonusChances() - 1)
-                );
+
+                if (chances.getDailyBonusChances() > 1) {
+
+                    dailyBonusEditor.putInt(
+                            context.getString(R.string.chances_left),
+                            (chances.getDailyBonusChances() - 1)
+                    );
+
+                } else {
+
+                    dailyBonusEditor.putInt(
+                            context.getString(R.string.chances_left),
+                            0
+                    );
+
+                    Log.d(TAG, "decrementChances: Adding Time to shared Preferences for Daily Bonus");
+
+                    dailyBonusEditor.putLong(
+                            context.getString(R.string.daily_bonus_time),
+                            TimeUtils.getCurrentTime()
+                    );
+                }
+
                 dailyBonusEditor.apply();
 
                 Log.d(TAG, "decrementChances: dailyBonus chances--");
@@ -199,11 +236,32 @@ public class OptionsRecyclerViewAdapter
                         context.getString(R.string.reward_name_collect_rewards),
                         Context.MODE_PRIVATE
                 );
+
                 SharedPreferences.Editor collectRewardsEditor = collectRewards.edit();
-                collectRewardsEditor.putInt(
-                        context.getString(R.string.chances_left),
-                        (chances.getCollectRewardsChances() - 1)
-                );
+
+                if (chances.getCollectRewardsChances() > 1) {
+
+                    collectRewardsEditor.putInt(
+                            context.getString(R.string.chances_left),
+                            (chances.getCollectRewardsChances() - 1)
+                    );
+
+                } else {
+
+                    collectRewardsEditor.putInt(
+                            context.getString(R.string.chances_left),
+                            0
+                    );
+
+                    Log.d(TAG, "decrementChances: Adding Time to shared Preferences for Collect Rewards");
+
+
+                    collectRewardsEditor.putLong(
+                            context.getString(R.string.collect_reward_time),
+                            TimeUtils.getCurrentTime()
+                    );
+                }
+
                 collectRewardsEditor.apply();
 
                 Log.d(TAG, "decrementChances: collectRewards chances--");
@@ -217,11 +275,30 @@ public class OptionsRecyclerViewAdapter
                         context.getString(R.string.reward_name_watch_videos),
                         Context.MODE_PRIVATE
                 );
+
                 SharedPreferences.Editor watchVideosEditor = watchVideos.edit();
-                watchVideosEditor.putInt(
-                        context.getString(R.string.chances_left),
-                        (chances.getWatchVideosChances() - 1)
-                );
+                if (chances.getWatchVideosChances() > 1) {
+
+                    watchVideosEditor.putInt(
+                            context.getString(R.string.chances_left),
+                            (chances.getWatchVideosChances() - 1)
+                    );
+
+                } else {
+
+                    watchVideosEditor.putInt(
+                            context.getString(R.string.chances_left),
+                            0
+                    );
+
+                    Log.d(TAG, "decrementChances: Adding Time to shared Preferences for Watch Videos");
+
+                    watchVideosEditor.putLong(
+                            context.getString(R.string.watch_video_time),
+                            TimeUtils.getCurrentTime()
+                    );
+                }
+
                 watchVideosEditor.apply();
 
                 Log.d(TAG, "decrementChances: watchRewards chances--");
@@ -235,11 +312,32 @@ public class OptionsRecyclerViewAdapter
                         context.getString(R.string.reward_name_gold_points),
                         Context.MODE_PRIVATE
                 );
+
                 SharedPreferences.Editor goldPointsEditor = goldPoints.edit();
-                goldPointsEditor.putInt(
-                        context.getString(R.string.chances_left),
-                        (chances.getGoldPointsChances() - 1)
-                );
+                if (chances.getGoldPointsChances() > 1) {
+
+                    goldPointsEditor.putInt(
+                            context.getString(R.string.chances_left),
+                            (chances.getGoldPointsChances() - 1)
+                    );
+
+                } else {
+
+                    goldPointsEditor.putInt(
+                            context.getString(R.string.chances_left),
+                            0
+                    );
+
+                    Log.d(TAG, "decrementChances: Adding Time to shared Preferences for Gold Points");
+
+                    goldPointsEditor.putLong(
+                            context.getString(R.string.gold_points_time),
+                            TimeUtils.getCurrentTime()
+                    );
+
+                }
+
+
                 goldPointsEditor.apply();
 
                 Log.d(TAG, "decrementChances: goldPoints chances--");
@@ -249,10 +347,137 @@ public class OptionsRecyclerViewAdapter
 
     }
 
-    private void openUrl(String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setPackage("com.android.chrome");
-        context.startActivity(intent);
+    private void checkForChancesRenewal(int position,
+                                        TextView optionChances,
+                                        TextView optionAmount) {
+
+        LoadingDialog loadingDialog = new LoadingDialog(context);
+        loadingDialog.show();
+
+        if (chances.getDailyBonusChances() == 0) {
+
+            SharedPreferences dailyBonus = context.getSharedPreferences(
+                    context.getString(R.string.reward_name_daily_bonus),
+                    Context.MODE_PRIVATE
+            );
+
+            long storedTime = dailyBonus.getLong(context.getString(R.string.daily_bonus_time), -1);
+
+            boolean comparison = TimeUtils.compareTimeWithSixHours(storedTime, "dailyBonus");
+
+            if (comparison) {
+
+                SharedPreferences.Editor dailyBonusEditor = dailyBonus.edit();
+
+                dailyBonusEditor.putInt(
+                        context.getString(R.string.chances_left),
+                        5
+                );
+
+                dailyBonusEditor.apply();
+
+                toggleView(position, optionChances, optionAmount);
+            }
+
+        }
+
+        if (chances.getCollectRewardsChances() == 0) {
+
+            SharedPreferences collectRewards = context.getSharedPreferences(
+                    context.getString(R.string.reward_name_collect_rewards),
+                    Context.MODE_PRIVATE
+            );
+
+            long storedTime = collectRewards.getLong(context.getString(R.string.collect_reward_time), -1);
+
+            boolean comparison = TimeUtils.compareTimeWithSixHours(storedTime, "collectRewards");
+
+            if (comparison) {
+
+                SharedPreferences.Editor collectRewardsBonus = collectRewards.edit();
+
+                collectRewardsBonus.putInt(
+                        context.getString(R.string.chances_left),
+                        5
+                );
+
+                collectRewardsBonus.apply();
+
+                toggleView(position, optionChances, optionAmount);
+            }
+
+        }
+
+        if (chances.getWatchVideosChances() == 0) {
+
+            SharedPreferences watchVideos = context.getSharedPreferences(
+                    context.getString(R.string.reward_name_watch_videos),
+                    Context.MODE_PRIVATE
+            );
+
+            long storedTime = watchVideos.getLong(context.getString(R.string.watch_video_time), -1);
+
+            boolean comparison = TimeUtils.compareTimeWithSixHours(storedTime, "watchVideos");
+
+            if (comparison) {
+
+                SharedPreferences.Editor watchVideoEditor = watchVideos.edit();
+
+                watchVideoEditor.putInt(
+                        context.getString(R.string.chances_left),
+                        5
+                );
+
+                watchVideoEditor.apply();
+
+                toggleView(position, optionChances, optionAmount);
+            }
+
+        }
+
+        if (chances.getGoldPointsChances() == 0) {
+
+            SharedPreferences goldPoints = context.getSharedPreferences(
+                    context.getString(R.string.reward_name_gold_points),
+                    Context.MODE_PRIVATE
+            );
+
+            long storedTime = goldPoints.getLong(context.getString(R.string.gold_points_time), -1);
+
+            boolean comparison = TimeUtils.compareTimeWithSixHours(storedTime, "goldPoints");
+
+            if (comparison) {
+
+                SharedPreferences.Editor goldPointsEditor = goldPoints.edit();
+
+                goldPointsEditor.putInt(
+                        context.getString(R.string.chances_left),
+                        5
+                );
+
+                goldPointsEditor.apply();
+
+                toggleView(position, optionChances, optionAmount);
+            }
+
+        }
+
+        loadingDialog.dismiss();
+
     }
+
+    private void toggleView(int position, TextView optionChances, TextView optionAmount) {
+
+        optionChances.setTextColor(Color.parseColor("#FFBC36"));
+        optionChances.setText(context.getString(R.string.max_chances_left));
+
+        optionAmount.setBackground(AppCompatResources.getDrawable(context, R.drawable.text_expandable_bg));
+
+        recyclerView.post(() -> {
+            notifyItemChanged(position);
+            notifyDataSetChanged();
+        });
+
+    }
+
 }

@@ -62,12 +62,11 @@ public class EarnMoneyFragment extends Fragment {
         ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
         ArrayList<String> links = backendProvider.getAllLinks();
 
-        ArrayList<String> finalLinks = links;
-        binding.ludo.setOnClickListener(view1 -> openUrl(finalLinks.get(1)));
-        binding.chess.setOnClickListener(view1 -> openUrl(finalLinks.get(2)));
-        binding.pubg.setOnClickListener(view1 -> openUrl(finalLinks.get(3)));
-        binding.puzzle.setOnClickListener(view1 -> openUrl(finalLinks.get(4)));
-        binding.card.setOnClickListener(view1 -> openUrl(finalLinks.get(5)));
+        binding.ludo.setOnClickListener(view1 -> openUrl(links.get(1)));
+        binding.chess.setOnClickListener(view1 -> openUrl(links.get(2)));
+        binding.pubg.setOnClickListener(view1 -> openUrl(links.get(3)));
+        binding.puzzle.setOnClickListener(view1 -> openUrl(links.get(4)));
+        binding.card.setOnClickListener(view1 -> openUrl(links.get(5)));
 
         binding.buttonWithdraw.setOnClickListener(view1 -> {
 
@@ -266,7 +265,8 @@ public class EarnMoneyFragment extends Fragment {
                         getParentFragmentManager(),
                         optionsArrayList,
                         userData.getUid(),
-                        chances
+                        chances,
+                        binding.optionsRecyclerView
                 );
 
         RecyclerViewMargin recyclerViewMargin = new RecyclerViewMargin(3);
