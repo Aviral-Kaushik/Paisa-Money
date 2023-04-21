@@ -127,47 +127,6 @@ public class EarnMoneyFragment extends Fragment {
         setUpOptionAdapter();
     }
 
-    private void addChancesToSharedPreferences() {
-
-        SharedPreferences dailyBonus = requireActivity().getSharedPreferences(
-                requireContext().getString(R.string.reward_name_daily_bonus),
-                Context.MODE_PRIVATE
-        );
-
-        SharedPreferences collectRewards = requireActivity().getSharedPreferences(
-                requireContext().getString(R.string.reward_name_collect_rewards),
-                Context.MODE_PRIVATE
-        );
-
-        SharedPreferences watchVideos = requireActivity().getSharedPreferences(
-                requireContext().getString(R.string.reward_name_watch_videos),
-                Context.MODE_PRIVATE
-        );
-
-        SharedPreferences goldPoints = requireActivity().getSharedPreferences(
-                requireContext().getString(R.string.reward_name_gold_points),
-                Context.MODE_PRIVATE
-        );
-
-        SharedPreferences.Editor dailyBonusEditor = dailyBonus.edit();
-        SharedPreferences.Editor collectRewardsEditor = collectRewards.edit();
-        SharedPreferences.Editor watchVideosEditor = watchVideos.edit();
-        SharedPreferences.Editor goldPointsEditor = goldPoints.edit();
-
-        dailyBonusEditor.putInt(getString(R.string.chances_left), 5);
-        collectRewardsEditor.putInt(getString(R.string.chances_left), 5);
-        watchVideosEditor.putInt(getString(R.string.chances_left), 5);
-        goldPointsEditor.putInt(getString(R.string.chances_left), 5);
-
-        dailyBonusEditor.apply();
-        collectRewardsEditor.apply();
-        watchVideosEditor.apply();
-        goldPointsEditor.apply();
-
-        Log.d("AviralAPI", "addChancesToSharedPreferences: Added all the chances in shared preferences");
-
-    }
-
     private void fetchUserData() {
 
         ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
@@ -180,7 +139,7 @@ public class EarnMoneyFragment extends Fragment {
 
             binding.walletBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
             binding.btnBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
-        }, 2000);
+        }, 3000);
 
 
         userData = updatedUserData;

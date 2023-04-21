@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -104,6 +105,9 @@ public class LoginActivity extends AppCompatActivity {
                             .putExtra("fromGoogle", true));
 
                 }
+
+                addChancesToSharedPreferences();
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -177,6 +181,47 @@ public class LoginActivity extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.getCache().clear();
         requestQueue.add(stringRequest);
+
+    }
+
+    private void addChancesToSharedPreferences() {
+
+        SharedPreferences dailyBonus = getSharedPreferences(
+                getString(R.string.reward_name_daily_bonus),
+                Context.MODE_PRIVATE
+        );
+
+        SharedPreferences collectRewards = getSharedPreferences(
+                getString(R.string.reward_name_collect_rewards),
+                Context.MODE_PRIVATE
+        );
+
+        SharedPreferences watchVideos = getSharedPreferences(
+                getString(R.string.reward_name_watch_videos),
+                Context.MODE_PRIVATE
+        );
+
+        SharedPreferences goldPoints = getSharedPreferences(
+                getString(R.string.reward_name_gold_points),
+                Context.MODE_PRIVATE
+        );
+
+        SharedPreferences.Editor dailyBonusEditor = dailyBonus.edit();
+        SharedPreferences.Editor collectRewardsEditor = collectRewards.edit();
+        SharedPreferences.Editor watchVideosEditor = watchVideos.edit();
+        SharedPreferences.Editor goldPointsEditor = goldPoints.edit();
+
+        dailyBonusEditor.putInt(getString(R.string.chances_left), 5);
+        collectRewardsEditor.putInt(getString(R.string.chances_left), 5);
+        watchVideosEditor.putInt(getString(R.string.chances_left), 5);
+        goldPointsEditor.putInt(getString(R.string.chances_left), 5);
+
+        dailyBonusEditor.apply();
+        collectRewardsEditor.apply();
+        watchVideosEditor.apply();
+        goldPointsEditor.apply();
+
+        Log.d("AviralAPI", "addChancesToSharedPreferences: Added all the chances in shared preferences");
 
     }
 

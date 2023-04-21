@@ -83,10 +83,10 @@
     <string name="reward_name_watch_videos">watchVideos</string>
     <string name="reward_name_gold_points">goldPoints</string>
     <string name="chances_left">chancesLeft</string>
-    <string name="reward_name_daily_bonus">dailyBonus</string>
     <string name="daily_bonus_time">dailyBonusTime</string>
     <string name="collect_reward_time">collectRewardTime</string>
     <string name="watch_video_time">watchVideoTime</string>
     <string name="gold_points_time">goldPointsTime</string>
     <string name="max_chances_left">5 Chances Left</string>
+    <string name="dummy_reward_amount">₹10</string>
 </resources>

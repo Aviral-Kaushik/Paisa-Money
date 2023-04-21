@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void delay(Runnable runnable) {
         Handler handler = new Handler();
-        handler.postDelayed(runnable, 2000);
+        handler.postDelayed(runnable, 3000);
     }
 
     public void setUpBottomNavigation() {

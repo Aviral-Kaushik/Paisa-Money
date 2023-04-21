@@ -30,6 +30,7 @@ import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.Utils.TimeUtils;
 import com.bumptech.glide.Glide;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class OptionsRecyclerViewAdapter
@@ -42,7 +43,6 @@ public class OptionsRecyclerViewAdapter
     private final FragmentManager fragmentManager;
     private final String uid;
     private final OptionChances chances;
-
     private final RecyclerView recyclerView;
 
     public OptionsRecyclerViewAdapter(Context context,
@@ -89,7 +89,9 @@ public class OptionsRecyclerViewAdapter
         }
 
         holder.optionTitle.setText(optionList.get(position).getOptionTitle());
-        holder.optionButton.setText(String.format("₹%s", optionList.get(position).getOptionEarningAmount()));
+        holder.optionButton.setText(String.format("₹%s",
+                roundOfNumber(optionList.get(position).getOptionEarningAmount())
+        ));
 
         Glide.with(holder.itemView.getContext())
                 .load(optionList.get(position).getOptionImage())
@@ -173,7 +175,7 @@ public class OptionsRecyclerViewAdapter
 
             Intent intent = new Intent(context, MainActivity.class);
             context.startActivity(intent);
-        }, 2000);
+        }, 3000);
 
     }
 
@@ -478,6 +480,19 @@ public class OptionsRecyclerViewAdapter
             notifyDataSetChanged();
         });
 
+    }
+
+    private String roundOfNumber(double number) {
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
+        String decimalValue = decimalFormat.format(number);
+
+        if (decimalValue.length() == 3) {
+            decimalValue += "0";
+        }
+
+        return decimalValue;
     }
 
 }
