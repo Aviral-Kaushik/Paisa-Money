@@ -29,6 +29,11 @@ public class MainActivity extends AppCompatActivity {
 
     private LoadingDialog loadingDialog;
 
+    private boolean isEarnMoneyFragmentOpen = false,
+        isSpinFragmentOpen = false,
+        isScratchCardFragmentOpen = false,
+        isProfileFragmentOpen = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
             Bundle userDataBundle = new Bundle();
             userDataBundle.putParcelable(getString(R.string.user_data), userData);
 
+            isEarnMoneyFragmentOpen = true;
+
             EarnMoneyFragment earnMoneyFragment = new EarnMoneyFragment();
             earnMoneyFragment.setArguments(userDataBundle);
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -99,78 +106,116 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout btnProfile = findViewById(R.id.btnBottomProfile);
 
         btnEarnMoney.setOnClickListener(view -> {
-            EarnMoneyFragment earnMoneyFragment = new EarnMoneyFragment();
-            earnMoneyFragment.setArguments(userDataBundle);
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_in,
-                            R.anim.fade_out,
-                            R.anim.fade_in,
-                            R.anim.slide_out
-                    );
-            fragmentTransaction.attach(earnMoneyFragment);
-            fragmentTransaction.detach(earnMoneyFragment);
-            fragmentTransaction.attach(earnMoneyFragment);
-            fragmentTransaction.replace(R.id.main_container, earnMoneyFragment);
-            fragmentTransaction.commit();
+
+            if (!isEarnMoneyFragmentOpen) {
+
+                isEarnMoneyFragmentOpen = true;
+                isSpinFragmentOpen = false;
+                isScratchCardFragmentOpen = false;
+                isProfileFragmentOpen = false;
+
+                EarnMoneyFragment earnMoneyFragment = new EarnMoneyFragment();
+                earnMoneyFragment.setArguments(userDataBundle);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(
+                                R.anim.slide_in,
+                                R.anim.fade_out,
+                                R.anim.fade_in,
+                                R.anim.slide_out
+                        );
+                fragmentTransaction.attach(earnMoneyFragment);
+                fragmentTransaction.detach(earnMoneyFragment);
+                fragmentTransaction.attach(earnMoneyFragment);
+                fragmentTransaction.replace(R.id.main_container, earnMoneyFragment);
+                fragmentTransaction.commit();
+
+            }
         });
 
         btnScratchCard.setOnClickListener(view -> {
-            ScratchCardFragment scratchCardFragment = new ScratchCardFragment();
-            scratchCardFragment.setArguments(userDataBundle);
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_in,
-                            R.anim.fade_out,
-                            R.anim.fade_in,
-                            R.anim.slide_out
-                    );
-            fragmentTransaction.attach(scratchCardFragment);
-            fragmentTransaction.detach(scratchCardFragment);
-            fragmentTransaction.attach(scratchCardFragment);
-            fragmentTransaction.replace(R.id.main_container, scratchCardFragment);
-            fragmentTransaction.commit();
+
+            if (!isScratchCardFragmentOpen) {
+
+                isScratchCardFragmentOpen = true;
+                isEarnMoneyFragmentOpen = false;
+                isSpinFragmentOpen = false;
+                isProfileFragmentOpen = false;
+
+                ScratchCardFragment scratchCardFragment = new ScratchCardFragment();
+                scratchCardFragment.setArguments(userDataBundle);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(
+                                R.anim.slide_in,
+                                R.anim.fade_out,
+                                R.anim.fade_in,
+                                R.anim.slide_out
+                        );
+                fragmentTransaction.attach(scratchCardFragment);
+                fragmentTransaction.detach(scratchCardFragment);
+                fragmentTransaction.attach(scratchCardFragment);
+                fragmentTransaction.replace(R.id.main_container, scratchCardFragment);
+                fragmentTransaction.commit();
+
+            }
         });
 
         btnSpin.setOnClickListener(view -> {
-            SpinFragment spinFragment = new SpinFragment();
-            spinFragment.setArguments(userDataBundle);
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_in,
-                            R.anim.fade_out,
-                            R.anim.fade_in,
-                            R.anim.slide_out
-                    );
-            fragmentTransaction.attach(spinFragment);
-            fragmentTransaction.detach(spinFragment);
-            fragmentTransaction.attach(spinFragment);
-            fragmentTransaction.replace(R.id.main_container, spinFragment);
-            fragmentTransaction.commit();
+
+            if (!isSpinFragmentOpen) {
+
+                isSpinFragmentOpen = true;
+                isScratchCardFragmentOpen = false;
+                isEarnMoneyFragmentOpen = false;
+                isProfileFragmentOpen = false;
+
+                SpinFragment spinFragment = new SpinFragment();
+                spinFragment.setArguments(userDataBundle);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(
+                                R.anim.slide_in,
+                                R.anim.fade_out,
+                                R.anim.fade_in,
+                                R.anim.slide_out
+                        );
+                fragmentTransaction.attach(spinFragment);
+                fragmentTransaction.detach(spinFragment);
+                fragmentTransaction.attach(spinFragment);
+                fragmentTransaction.replace(R.id.main_container, spinFragment);
+                fragmentTransaction.commit();
+
+            }
         });
 
         btnProfile.setOnClickListener(view -> {
 
-            ProfileFragment profileFragment = new ProfileFragment();
-            profileFragment.setArguments(userDataBundle);
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_in,
-                            R.anim.fade_out,
-                            R.anim.fade_in,
-                            R.anim.slide_out
-                    );
-            fragmentTransaction.attach(profileFragment);
-            fragmentTransaction.detach(profileFragment);
-            fragmentTransaction.attach(profileFragment);
-            fragmentTransaction.replace(R.id.main_container, profileFragment);
-            fragmentTransaction.commit();
-        });
+            if (!isProfileFragmentOpen) {
 
+                isProfileFragmentOpen = true;
+                isEarnMoneyFragmentOpen = false;
+                isSpinFragmentOpen = false;
+                isScratchCardFragmentOpen = false;
+
+                ProfileFragment profileFragment = new ProfileFragment();
+                profileFragment.setArguments(userDataBundle);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(
+                                R.anim.slide_in,
+                                R.anim.fade_out,
+                                R.anim.fade_in,
+                                R.anim.slide_out
+                        );
+                fragmentTransaction.attach(profileFragment);
+                fragmentTransaction.detach(profileFragment);
+                fragmentTransaction.attach(profileFragment);
+                fragmentTransaction.replace(R.id.main_container, profileFragment);
+                fragmentTransaction.commit();
+
+            }
+        });
 
     }
 }

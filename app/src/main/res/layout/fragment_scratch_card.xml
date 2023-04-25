@@ -136,7 +136,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:overlay_image="@drawable/scratch_card" />
+            app:overlay_image="@drawable/scratch_card1" />
+
+<!--        @drawable/scratch_card-->
 
         <ImageView
             android:id="@+id/scratch_image"
@@ -147,7 +149,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/scratch_card" />
+            android:src="@drawable/scratch_card1" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

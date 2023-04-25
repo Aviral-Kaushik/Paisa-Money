@@ -1,10 +1,9 @@
 package com.aviral.eaa1.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,12 +17,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.aviral.eaa1.Activity.MainActivity;
 import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
+import com.aviral.eaa1.Fragments.EarnMoneyFragment;
 import com.aviral.eaa1.Fragments.OptionChances;
 import com.aviral.eaa1.Models.EarningOptions;
+import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
 import com.aviral.eaa1.Utils.LoadingDialog;
@@ -43,20 +44,20 @@ public class OptionsRecyclerViewAdapter
     private final FragmentManager fragmentManager;
     private final String uid;
     private final OptionChances chances;
-    private final RecyclerView recyclerView;
+    private final UserData userData;
 
     public OptionsRecyclerViewAdapter(Context context,
                                       FragmentManager fragmentManager,
                                       ArrayList<EarningOptions> optionList,
                                       String uid,
                                       OptionChances chances,
-                                      RecyclerView recyclerView) {
+                                      UserData userData) {
         this.context = context;
         this.fragmentManager = fragmentManager;
         this.optionList = optionList;
         this.uid = uid;
         this.chances = chances;
-        this.recyclerView = recyclerView;
+        this.userData = userData;
     }
 
     @NonNull
@@ -156,8 +157,8 @@ public class OptionsRecyclerViewAdapter
 
         Log.d(TAG, "updateUserBalance: Updating User Balance");
 
-        LoadingDialog loadingDialog = new LoadingDialog(context);
-        loadingDialog.show();
+//        LoadingDialog loadingDialog = new LoadingDialog(context);
+//        loadingDialog.show();
 
         ApiBackendProvider backendProvider = new ApiBackendProvider(context);
 
@@ -171,19 +172,29 @@ public class OptionsRecyclerViewAdapter
         decrementChances(rewardName);
 
         new Handler().postDelayed(() -> {
-            loadingDialog.dismiss();
+//            loadingDialog.dismiss();
 
-            Intent intent = new Intent(context, MainActivity.class);
-            context.startActivity(intent);
-        }, 3000);
+            Bundle userDataBundle = new Bundle();
 
-    }
+            userDataBundle.putParcelable(context.getString(R.string.user_data), userData);
 
-    private void openUrl(String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setPackage("com.android.chrome");
-        context.startActivity(intent);
+            EarnMoneyFragment earnMoneyFragment = new EarnMoneyFragment();
+            earnMoneyFragment.setArguments(userDataBundle);
+            FragmentTransaction fragmentTransaction = fragmentManager
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in,
+                            R.anim.fade_out,
+                            R.anim.fade_in,
+                            R.anim.slide_out
+                    );
+            fragmentTransaction.attach(earnMoneyFragment);
+            fragmentTransaction.detach(earnMoneyFragment);
+            fragmentTransaction.attach(earnMoneyFragment);
+            fragmentTransaction.replace(R.id.main_container, earnMoneyFragment);
+            fragmentTransaction.commit();
+        }, 1000);
+
     }
 
     private void decrementChances(String rewardName) {
@@ -475,10 +486,10 @@ public class OptionsRecyclerViewAdapter
 
         optionAmount.setBackground(AppCompatResources.getDrawable(context, R.drawable.text_expandable_bg));
 
-        recyclerView.post(() -> {
-            notifyItemChanged(position);
-            notifyDataSetChanged();
-        });
+//        recyclerView.post(() -> {
+//            notifyItemChanged(position);
+//            notifyDataSetChanged();
+//        });
 
     }
 

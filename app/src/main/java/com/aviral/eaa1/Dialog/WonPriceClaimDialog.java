@@ -1,7 +1,5 @@
 package com.aviral.eaa1.Dialog;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 
-import com.aviral.eaa1.Activity.MainActivity;
-import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
-import com.aviral.eaa1.Utils.ApiBackendProvider;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Objects;
 
@@ -44,9 +38,18 @@ public class WonPriceClaimDialog extends DialogFragment {
         wonPriceClaimed.setOnClickListener(view1 -> dismiss());
 
         TextView amount = view.findViewById(R.id.tv_amount);
-        amount.setText(wonAmount);
+        amount.setText(roundOfNumber(wonAmount));
 
         return view;
+    }
+
+    private String roundOfNumber(String number) {
+
+        if (number.length() == 4) {
+            number += "0";
+        }
+
+        return number;
     }
 
 

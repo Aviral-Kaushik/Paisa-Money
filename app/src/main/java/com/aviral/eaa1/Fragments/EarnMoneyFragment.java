@@ -50,14 +50,14 @@ public class EarnMoneyFragment extends Fragment {
 
         userData = requireArguments().getParcelable(requireContext().getString(R.string.user_data));
 
-        binding.walletBalance.setText(String.format("₹%s", userData.getBalance()));
-        binding.btnBalance.setText(String.format("₹%s", userData.getBalance()));
+//        binding.walletBalance.setText(String.format("₹%s", userData.getBalance()));
+//        binding.btnBalance.setText(String.format("₹%s", userData.getBalance()));
 
         View view = binding.getRoot();
 
         binding.userName.setText(userData.getName());
 
-        loadingDialog = new LoadingDialog(requireContext());
+//        loadingDialog = new LoadingDialog(requireContext());
 
         ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
         ArrayList<String> links = backendProvider.getAllLinks();
@@ -83,7 +83,7 @@ public class EarnMoneyFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        loadingDialog.show();
+//        loadingDialog.show();
 
 //        addChancesToSharedPreferences();
 
@@ -135,11 +135,11 @@ public class EarnMoneyFragment extends Fragment {
 
         new Handler().postDelayed(() -> {
 
-            loadingDialog.dismiss();
+//            loadingDialog.dismiss();
 
             binding.walletBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
             binding.btnBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
-        }, 3000);
+        }, 1000);
 
 
         userData = updatedUserData;
@@ -225,7 +225,7 @@ public class EarnMoneyFragment extends Fragment {
                         optionsArrayList,
                         userData.getUid(),
                         chances,
-                        binding.optionsRecyclerView
+                        userData
                 );
 
         RecyclerViewMargin recyclerViewMargin = new RecyclerViewMargin(3);
