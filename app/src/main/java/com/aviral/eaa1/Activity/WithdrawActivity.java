@@ -127,28 +127,44 @@ public class WithdrawActivity extends AppCompatActivity {
 
     private void navigateToPaymentScreen() {
 
+
         if (isPayPalSelected) {
 
             double withdrawAmount = Double.parseDouble(binding.payapalAmount.getText().toString().substring(1));
 
 
-            Intent intent = new Intent(this, PaymentActivity.class);
-            intent.putExtra(getString(R.string.payment_mode), getString(R.string.paypal));
-            intent.putExtra(getString(R.string.user_data), userData);
-            intent.putExtra(getString(R.string.withdraw_amount), withdrawAmount);
-            startActivity(intent);
+            if (withdrawAmount > 1.4) {
+
+                Intent intent = new Intent(this, PaymentActivity.class);
+                intent.putExtra(getString(R.string.payment_mode), getString(R.string.paypal));
+                intent.putExtra(getString(R.string.user_data), userData);
+                intent.putExtra(getString(R.string.withdraw_amount), 1.4);
+                startActivity(intent);
+
+            } else {
+
+                showSnackBar("Minimum Withdraw amount has to be $1.4");
+
+            }
 
 
         } else if (isPaytmSelected) {
 
             double withdrawAmount = Double.parseDouble(binding.paytmAmount.getText().toString().substring(1));
 
+            if (withdrawAmount > 100) {
 
-            Intent intent = new Intent(this, PaymentActivity.class);
-            intent.putExtra(getString(R.string.payment_mode), getString(R.string.paytm));
-            intent.putExtra(getString(R.string.user_data), userData);
-            intent.putExtra(getString(R.string.withdraw_amount), withdrawAmount);
-            startActivity(intent);
+                Intent intent = new Intent(this, PaymentActivity.class);
+                intent.putExtra(getString(R.string.payment_mode), getString(R.string.paytm));
+                intent.putExtra(getString(R.string.user_data), userData);
+                intent.putExtra(getString(R.string.withdraw_amount), 100);
+                startActivity(intent);
+
+            } else {
+
+                showSnackBar("Minimum Withdraw amount has to be ₹100");
+
+            }
 
 
         } else if (isPhonePeSelected) {
@@ -156,11 +172,19 @@ public class WithdrawActivity extends AppCompatActivity {
             double withdrawAmount = Double.parseDouble(binding.phonePeAmount.getText().toString().substring(1));
 
 
-            Intent intent = new Intent(this, PaymentActivity.class);
-            intent.putExtra(getString(R.string.payment_mode), getString(R.string.phonepe));
-            intent.putExtra(getString(R.string.user_data), userData);
-            intent.putExtra(getString(R.string.withdraw_amount), withdrawAmount);
-            startActivity(intent);
+            if (withdrawAmount > 100) {
+
+                Intent intent = new Intent(this, PaymentActivity.class);
+                intent.putExtra(getString(R.string.payment_mode), getString(R.string.phonepe));
+                intent.putExtra(getString(R.string.user_data), userData);
+                intent.putExtra(getString(R.string.withdraw_amount), 100);
+                startActivity(intent);
+
+            } else {
+
+                showSnackBar("Minimum Withdraw amount has to be ₹100");
+
+            }
 
 
         } else if (isGooglePaySelected) {
@@ -168,11 +192,19 @@ public class WithdrawActivity extends AppCompatActivity {
             double withdrawAmount = Double.parseDouble(binding.googlePayAmount.getText().toString().substring(1));
 
 
-            Intent intent = new Intent(this, PaymentActivity.class);
-            intent.putExtra(getString(R.string.payment_mode), getString(R.string.gpay));
-            intent.putExtra(getString(R.string.user_data), userData);
-            intent.putExtra(getString(R.string.withdraw_amount), withdrawAmount);
-            startActivity(intent);
+            if (withdrawAmount > 100) {
+
+                Intent intent = new Intent(this, PaymentActivity.class);
+                intent.putExtra(getString(R.string.payment_mode), getString(R.string.gpay));
+                intent.putExtra(getString(R.string.user_data), userData);
+                intent.putExtra(getString(R.string.withdraw_amount), withdrawAmount);
+                startActivity(intent);
+
+            } else {
+
+                showSnackBar("Minimum Withdraw amount has to be ₹100");
+
+            }
 
 
         } else {
