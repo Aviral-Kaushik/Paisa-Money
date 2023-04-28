@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +18,21 @@ import com.anupkumarpanwar.scratchview.ScratchView;
 import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
+import com.aviral.eaa1.Utils.AdsParameters;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
 import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.databinding.FragmentScratchCardBinding;
-import com.google.android.material.snackbar.Snackbar;
+import com.unity3d.ads.IUnityAdsInitializationListener;
+import com.unity3d.ads.IUnityAdsLoadListener;
+import com.unity3d.ads.IUnityAdsShowListener;
+import com.unity3d.ads.UnityAds;
+import com.unity3d.ads.UnityAdsShowOptions;
 
 import java.util.Random;
 
-public class ScratchCardFragment extends Fragment {
+public class ScratchCardFragment extends Fragment implements IUnityAdsInitializationListener {
+
+    private static final String TAG = "AviralAds";
 
     private FragmentScratchCardBinding binding;
 
@@ -42,6 +50,9 @@ public class ScratchCardFragment extends Fragment {
 
         binding = FragmentScratchCardBinding.inflate(inflater, container, false);
 
+        UnityAds.initialize(requireActivity().getApplicationContext(),
+                AdsParameters.unityGameID, AdsParameters.testMode, this);
+
         userData = requireArguments().getParcelable(requireContext().getString(R.string.user_data));
 
         backendProvider = new ApiBackendProvider(requireContext());
@@ -57,26 +68,26 @@ public class ScratchCardFragment extends Fragment {
 
         getChances();
 
-//        updateChances();
-
-//        fetchUserData();
-
         binding.scratchCard.setRevealListener(new ScratchView.IRevealListener() {
             @Override
             public void onRevealed(ScratchView scratchView) {
                 scratchView.setVisibility(View.GONE);
 
-                decrementChances();
+                DisplayRewardedAd();
 
-                updateUserBalance(binding.amountWon.getText().toString().substring(1));
-
+//                decrementChances();
+//
+//                updateUserBalance(binding.amountWon.getText().toString().substring(1));
+//
                 binding.btnBalance.setText(String.format("₹%s",
                         Double.parseDouble(userData.getBalance())
                                 + Double.parseDouble(binding.amountWon.getText().toString().substring(1))));
 
-                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(binding.amountWon.getText().toString());
-
-                wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
+//                updateUserBalance(binding.amountWon.getText().toString().substring(1));
+//
+//                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(binding.amountWon.getText().toString());
+//
+//                wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
 
             }
 
@@ -87,6 +98,62 @@ public class ScratchCardFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private final IUnityAdsLoadListener loadListener = new IUnityAdsLoadListener() {
+        @Override
+        public void onUnityAdsAdLoaded(String placementId) {
+            UnityAds.show(requireActivity(), AdsParameters.rewardedAndroidAdUnitId, new UnityAdsShowOptions(), showListener);
+        }
+
+        @Override
+        public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
+            Log.d(TAG, "Unity Ads failed to load ad for " + placementId + " with error: [" + error + "] " + message);
+        }
+    };
+
+    private final IUnityAdsShowListener showListener = new IUnityAdsShowListener() {
+        @Override
+        public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
+            Log.d(TAG, "Unity Ads failed to show ad for " + placementId + " with error: [" + error + "] " + message);
+        }
+
+        @Override
+        public void onUnityAdsShowStart(String placementId) {
+            Log.d(TAG, "onUnityAdsShowStart: " + placementId);
+        }
+
+        @Override
+        public void onUnityAdsShowClick(String placementId) {
+            Log.d(TAG, "onUnityAdsShowClick: " + placementId);
+        }
+
+        @Override
+        public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
+            Log.d(TAG, "onUnityAdsShowComplete: " + placementId);
+//            if (state.equals(UnityAds.UnityAdsShowCompletionState.COMPLETED)) {
+//                decrementChances();
+//
+//                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
+//                        binding.amountWon.getText().toString(),
+//                        getString(R.string.scratch_fragment),
+//                        requireActivity());
+//
+//                updateUserBalance(binding.amountWon.getText().toString().substring(1));
+//
+//                wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
+//            }
+        }
+    };
+
+    @Override
+    public void onInitializationComplete() {
+        Log.d(TAG, "onInitializationComplete: Ads Initialization Complete");
+    }
+
+    @Override
+    public void onInitializationFailed(UnityAds.UnityAdsInitializationError error, String message) {
+        Log.d(TAG, "onInitializationFailed: Ads Initialization failed " + message);
     }
 
     @Override
@@ -109,7 +176,7 @@ public class ScratchCardFragment extends Fragment {
 
     private void updateUserBalance(String earnedAmount) {
 
-        loadingDialog.show();
+//        loadingDialog.show();
 
         backendProvider.updateUserBalance(
                 userData.getUid(),
@@ -132,8 +199,11 @@ public class ScratchCardFragment extends Fragment {
                             R.anim.fade_in,
                             R.anim.slide_out
                     );
+            fragmentTransaction.attach(scratchCardFragment);
+            fragmentTransaction.detach(scratchCardFragment);
+            fragmentTransaction.attach(scratchCardFragment);
             fragmentTransaction.replace(R.id.main_container, scratchCardFragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.commitAllowingStateLoss();
         }, 2000);
 
     }
@@ -148,8 +218,6 @@ public class ScratchCardFragment extends Fragment {
             binding.tvChances.setText(chancesLeft + " Chance Left");
         } else {
             binding.tvChances.setText(chancesLeft + " Chance Left");
-
-            binding.scratchCard.setEraserMode();
 
             binding.scratchCard.setVisibility(View.GONE);
             binding.scratchImage.setVisibility(View.VISIBLE);
@@ -173,14 +241,6 @@ public class ScratchCardFragment extends Fragment {
 
     }
 
-    private void updateChances() {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("scratchChances", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putInt("chancesLeft", 10);
-        editor.apply();
-    }
-
     private double generateRandomNumber() {
         double min = 0.10;
         double max = 0.50;
@@ -190,6 +250,22 @@ public class ScratchCardFragment extends Fragment {
         double randomDouble = min + (max - min) * random.nextDouble();
 
         return Math.round(randomDouble * 100.0) / 100.0;
+    }
+
+    public void DisplayRewardedAd() {
+        UnityAds.load(AdsParameters.rewardedAndroidAdUnitId, loadListener);
+
+        decrementChances();
+
+        WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
+                binding.amountWon.getText().toString(),
+                getString(R.string.scratch_fragment),
+                requireActivity(),
+                userData);
+
+        updateUserBalance(binding.amountWon.getText().toString().substring(1));
+
+        wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
     }
 
     @Override

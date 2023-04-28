@@ -23,7 +23,6 @@ import com.aviral.eaa1.Models.EarningOptions;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
-import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.Utils.RecyclerViewMargin;
 import com.aviral.eaa1.databinding.EarnMoneyFragmentBinding;
 
@@ -35,8 +34,6 @@ public class EarnMoneyFragment extends Fragment {
     private EarnMoneyFragmentBinding binding;
 
     private UserData userData;
-
-    private LoadingDialog loadingDialog;
 
     private int dailyBonusChances, watchVideoChances, collectRewardsChances, goldPointsChances;
 
@@ -50,14 +47,9 @@ public class EarnMoneyFragment extends Fragment {
 
         userData = requireArguments().getParcelable(requireContext().getString(R.string.user_data));
 
-//        binding.walletBalance.setText(String.format("₹%s", userData.getBalance()));
-//        binding.btnBalance.setText(String.format("₹%s", userData.getBalance()));
-
         View view = binding.getRoot();
 
         binding.userName.setText(userData.getName());
-
-//        loadingDialog = new LoadingDialog(requireContext());
 
         ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
         ArrayList<String> links = backendProvider.getAllLinks();
@@ -82,10 +74,6 @@ public class EarnMoneyFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-//        loadingDialog.show();
-
-//        addChancesToSharedPreferences();
 
         getChancesFromSharedPreferences();
 
@@ -135,14 +123,14 @@ public class EarnMoneyFragment extends Fragment {
 
         new Handler().postDelayed(() -> {
 
-//            loadingDialog.dismiss();
-
             binding.walletBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
             binding.btnBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
+
         }, 1000);
 
 
         userData = updatedUserData;
+
     }
 
     @Override
@@ -225,7 +213,9 @@ public class EarnMoneyFragment extends Fragment {
                         optionsArrayList,
                         userData.getUid(),
                         chances,
-                        userData
+                        userData,
+                        requireActivity(),
+                        requireActivity().getApplicationContext()
                 );
 
         RecyclerViewMargin recyclerViewMargin = new RecyclerViewMargin(3);

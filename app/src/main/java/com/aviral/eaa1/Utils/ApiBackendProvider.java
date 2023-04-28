@@ -115,6 +115,8 @@ public class ApiBackendProvider {
                         JSONObject jsonObject = new JSONObject(response);
 
                         isUpdateUserBalanceRequestSuccessful.set(jsonObject.getString("status").equals("updated"));
+
+                        Log.d(TAG, "updateUserBalance: User Balance Updated");
                     } catch (JSONException e) {
                         Log.d(TAG, "checkForEmailRegistration: Exception Occurred while api call " + e.getMessage());
                     }

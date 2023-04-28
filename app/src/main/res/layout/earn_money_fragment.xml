@@ -78,7 +78,7 @@
                         android:layout_marginStart="35dp"
                         android:layout_marginTop="25dp"
                         android:fontFamily="@font/lato_bold"
-                        android:text=""
+                        android:text="0.00"
                         android:textColor="@color/black"
                         android:textSize="22sp"
                         app:layout_constraintStart_toStartOf="parent"

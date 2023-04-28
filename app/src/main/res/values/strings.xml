@@ -89,4 +89,7 @@
     <string name="gold_points_time">goldPointsTime</string>
     <string name="max_chances_left">5 Chances Left</string>
     <string name="dummy_reward_amount">₹10</string>
+    <string name="spin_fragment">Spin</string>
+    <string name="scratch_fragment">Scratch</string>
+    <string name="options">Options</string>
 </resources>

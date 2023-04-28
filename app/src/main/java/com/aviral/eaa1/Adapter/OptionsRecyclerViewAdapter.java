@@ -1,5 +1,6 @@
 package com.aviral.eaa1.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -26,18 +27,27 @@ import com.aviral.eaa1.Fragments.OptionChances;
 import com.aviral.eaa1.Models.EarningOptions;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
+import com.aviral.eaa1.Utils.AdsParameters;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
 import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.Utils.TimeUtils;
 import com.bumptech.glide.Glide;
+import com.unity3d.ads.IUnityAdsInitializationListener;
+import com.unity3d.ads.IUnityAdsLoadListener;
+import com.unity3d.ads.IUnityAdsShowListener;
+import com.unity3d.ads.UnityAds;
+import com.unity3d.ads.UnityAdsShowOptions;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class OptionsRecyclerViewAdapter
-        extends RecyclerView.Adapter<OptionsRecyclerViewAdapter.ViewHolder> {
+        extends RecyclerView.Adapter<OptionsRecyclerViewAdapter.ViewHolder>
+        implements IUnityAdsInitializationListener {
 
     private static final String TAG = "AviralAPI";
+
+    private static final String TAG_ADD = "AviralAds";
 
     private final ArrayList<EarningOptions> optionList;
     private final Context context;
@@ -45,20 +55,66 @@ public class OptionsRecyclerViewAdapter
     private final String uid;
     private final OptionChances chances;
     private final UserData userData;
-
+    private final Activity activity;
     public OptionsRecyclerViewAdapter(Context context,
                                       FragmentManager fragmentManager,
                                       ArrayList<EarningOptions> optionList,
                                       String uid,
                                       OptionChances chances,
-                                      UserData userData) {
+                                      UserData userData,
+                                      Activity activity,
+                                      Context applicationContext) {
         this.context = context;
         this.fragmentManager = fragmentManager;
         this.optionList = optionList;
         this.uid = uid;
         this.chances = chances;
         this.userData = userData;
+        this.activity = activity;
+
+        UnityAds.initialize(applicationContext,
+                AdsParameters.unityGameID, AdsParameters.testMode, this);
+
     }
+
+    private final IUnityAdsLoadListener loadListener = new IUnityAdsLoadListener() {
+        @Override
+        public void onUnityAdsAdLoaded(String placementId) {
+            UnityAds.show(activity, AdsParameters.rewardedAndroidAdUnitId, new UnityAdsShowOptions(), showListener);
+        }
+
+        @Override
+        public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
+            Log.d(TAG_ADD, "Unity Ads failed to load ad for " + placementId + " with error: [" + error + "] " + message);
+        }
+    };
+
+    private final IUnityAdsShowListener showListener = new IUnityAdsShowListener() {
+        @Override
+        public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
+            Log.d(TAG_ADD, "Unity Ads failed to show ad for " + placementId + " with error: [" + error + "] " + message);
+        }
+
+        @Override
+        public void onUnityAdsShowStart(String placementId) {
+            Log.d(TAG_ADD, "onUnityAdsShowStart: " + placementId);
+        }
+
+        @Override
+        public void onUnityAdsShowClick(String placementId) {
+            Log.d(TAG_ADD, "onUnityAdsShowClick: " + placementId);
+        }
+
+        @Override
+        public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
+            Log.d(TAG_ADD, "onUnityAdsShowComplete: " + placementId);
+//            if (state.equals(UnityAds.UnityAdsShowCompletionState.COMPLETED)) {
+//
+//            } else {
+//                // Do not reward the user for skipping the ad
+//            }
+        }
+    };
 
     @NonNull
     @Override
@@ -104,21 +160,23 @@ public class OptionsRecyclerViewAdapter
 //              handle url launch here
 //              openUrl(optionList.get(position).getLink());
 
-                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
-                        "₹" + optionList.get(position).getOptionEarningAmount()
-                );
+                DisplayRewardedAd(position);
 
-                updateUserBalance(
-                        optionList.get(position).getRewardName(),
-                        String.valueOf(optionList.get(position).getOptionEarningAmount())
-                );
-
-                wonPriceClaimDialog.show(fragmentManager, "Earned Amount");
+//                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
+//                        "₹" + optionList.get(position).getOptionEarningAmount()
+//                );
+//
+//                updateUserBalance(
+//                        optionList.get(position).getRewardName(),
+//                        String.valueOf(optionList.get(position).getOptionEarningAmount())
+//                );
+//
+//                wonPriceClaimDialog.show(fragmentManager, "Earned Amount");
 
             });
         } else {
 
-            checkForChancesRenewal(position, holder.chances, holder.optionButton);
+            checkForChancesRenewal(holder.chances, holder.optionButton);
 
         }
 
@@ -153,12 +211,20 @@ public class OptionsRecyclerViewAdapter
         }
     }
 
+    @Override
+    public void onInitializationComplete() {
+        Log.d(TAG_ADD, "onInitializationComplete: Ads Initialization Complete");
+    }
+
+    @Override
+    public void onInitializationFailed(UnityAds.UnityAdsInitializationError error, String message) {
+        Log.d(TAG_ADD, "onInitializationFailed: Ads Initialization failed " + message);
+    }
+
     private void updateUserBalance(String rewardName, String earnedAmount) {
 
         Log.d(TAG, "updateUserBalance: Updating User Balance");
 
-//        LoadingDialog loadingDialog = new LoadingDialog(context);
-//        loadingDialog.show();
 
         ApiBackendProvider backendProvider = new ApiBackendProvider(context);
 
@@ -172,7 +238,6 @@ public class OptionsRecyclerViewAdapter
         decrementChances(rewardName);
 
         new Handler().postDelayed(() -> {
-//            loadingDialog.dismiss();
 
             Bundle userDataBundle = new Bundle();
 
@@ -192,7 +257,7 @@ public class OptionsRecyclerViewAdapter
             fragmentTransaction.detach(earnMoneyFragment);
             fragmentTransaction.attach(earnMoneyFragment);
             fragmentTransaction.replace(R.id.main_container, earnMoneyFragment);
-            fragmentTransaction.commit();
+            fragmentTransaction.commitAllowingStateLoss();
         }, 1000);
 
     }
@@ -360,8 +425,7 @@ public class OptionsRecyclerViewAdapter
 
     }
 
-    private void checkForChancesRenewal(int position,
-                                        TextView optionChances,
+    private void checkForChancesRenewal(TextView optionChances,
                                         TextView optionAmount) {
 
         LoadingDialog loadingDialog = new LoadingDialog(context);
@@ -389,7 +453,7 @@ public class OptionsRecyclerViewAdapter
 
                 dailyBonusEditor.apply();
 
-                toggleView(position, optionChances, optionAmount);
+                toggleView(optionChances, optionAmount);
             }
 
         }
@@ -416,7 +480,7 @@ public class OptionsRecyclerViewAdapter
 
                 collectRewardsBonus.apply();
 
-                toggleView(position, optionChances, optionAmount);
+                toggleView(optionChances, optionAmount);
             }
 
         }
@@ -443,7 +507,7 @@ public class OptionsRecyclerViewAdapter
 
                 watchVideoEditor.apply();
 
-                toggleView(position, optionChances, optionAmount);
+                toggleView(optionChances, optionAmount);
             }
 
         }
@@ -470,7 +534,7 @@ public class OptionsRecyclerViewAdapter
 
                 goldPointsEditor.apply();
 
-                toggleView(position, optionChances, optionAmount);
+                toggleView(optionChances, optionAmount);
             }
 
         }
@@ -479,17 +543,12 @@ public class OptionsRecyclerViewAdapter
 
     }
 
-    private void toggleView(int position, TextView optionChances, TextView optionAmount) {
+    private void toggleView(TextView optionChances, TextView optionAmount) {
 
         optionChances.setTextColor(Color.parseColor("#FFBC36"));
         optionChances.setText(context.getString(R.string.max_chances_left));
 
         optionAmount.setBackground(AppCompatResources.getDrawable(context, R.drawable.text_expandable_bg));
-
-//        recyclerView.post(() -> {
-//            notifyItemChanged(position);
-//            notifyDataSetChanged();
-//        });
 
     }
 
@@ -504,6 +563,24 @@ public class OptionsRecyclerViewAdapter
         }
 
         return decimalValue;
+    }
+
+    public void DisplayRewardedAd(int position) {
+        UnityAds.load(AdsParameters.rewardedAndroidAdUnitId, loadListener);
+
+        WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
+                "₹" + optionList.get(position).getOptionEarningAmount(),
+                context.getString(R.string.options),
+                activity,
+                userData
+        );
+
+        updateUserBalance(
+                optionList.get(position).getRewardName(),
+                String.valueOf(optionList.get(position).getOptionEarningAmount())
+        );
+
+        wonPriceClaimDialog.show(fragmentManager, "Earned Amount");
     }
 
 }

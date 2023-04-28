@@ -89,7 +89,8 @@
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/wallet_card_layout">
+        app:layout_constraintTop_toBottomOf="@id/wallet_card_layout"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:id="@+id/paypal"
@@ -204,7 +205,8 @@
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/linear_layout_payment_1">
+        app:layout_constraintTop_toBottomOf="@id/linear_layout_payment_1"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:id="@+id/phone_pe"

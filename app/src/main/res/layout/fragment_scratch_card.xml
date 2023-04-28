@@ -48,16 +48,16 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="425dp"
+        android:layout_width="300dp"
+        android:layout_height="390dp"
         android:layout_marginStart="50dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="50dp"
         app:cardBackgroundColor="#FFFBF4"
+        android:background="@drawable/scratch_card_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_chances">
-
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -128,17 +128,15 @@
 
         <com.anupkumarpanwar.scratchview.ScratchView
             android:id="@+id/scratch_card"
-            android:layout_width="300dp"
-            android:layout_height="425dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             app:overlay_width="300dp"
-            app:overlay_height="425dp"
+            app:overlay_height="390dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:overlay_image="@drawable/scratch_card2" />
-
-<!--        @drawable/scratch_card-->
 
         <ImageView
             android:id="@+id/scratch_image"
