@@ -1,5 +1,6 @@
 package com.aviral.eaa1.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -30,13 +31,12 @@ public class PaymentActivity extends AppCompatActivity {
                 && intent.hasExtra(getString(R.string.user_data))
                 && intent.hasExtra(getString(R.string.withdraw_amount))) {
             setupViews(intent.getStringExtra(getString(R.string.payment_mode)),
-                    intent.getParcelableExtra(getString(R.string.user_data)),
                     intent.getDoubleExtra(getString(R.string.withdraw_amount), 0.00));
 
         }
     }
 
-    private void setupViews(String paymentMode, UserData userData, Double withdrawAmount) {
+    private void setupViews(String paymentMode, Double withdrawAmount) {
 
         if (paymentMode.equals(getString(R.string.paypal))) {
 
@@ -70,7 +70,7 @@ public class PaymentActivity extends AppCompatActivity {
 
             boolean isWithdrawRequestSuccessful = backendProvider.makeWithdrawRequest(
                     new WithdrawRequest(
-                            userData.getUid(),
+                            getSharedPreferences("user", Context.MODE_PRIVATE).getString("uid", ""),
                             binding.name.getText().toString(),
                             binding.phoneNumber.getText().toString(),
                             binding.id.getText().toString(),

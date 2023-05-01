@@ -48,7 +48,6 @@ public class ReferralEarningActivity extends AppCompatActivity {
         binding = ActivityReferralEarningBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        UserData userData = new UserData();
         context = ReferralEarningActivity.this;
 
         friendArrayList = new ArrayList<>();
@@ -56,17 +55,12 @@ public class ReferralEarningActivity extends AppCompatActivity {
         loadingDialog = new LoadingDialog(this);
         loadingDialog.show();
 
-        Intent intent = getIntent();
 
-        if (intent.hasExtra(getString(R.string.user_data))) {
-            userData = intent.getParcelableExtra(getString(R.string.user_data));
-        }
+        binding.totalEarning.setText(String.format("₹%s", getSharedPreferences("user", Context.MODE_PRIVATE).getFloat("refer_earning", 0)));
+        binding.userName.setText(getSharedPreferences("user", Context.MODE_PRIVATE).getString("name", ""));
+        binding.tvUserName.setText(getSharedPreferences("user", Context.MODE_PRIVATE).getString("name", ""));
 
-        binding.totalEarning.setText(String.format("₹%s", userData.getReferralEarning()));
-        binding.userName.setText(userData.getName());
-        binding.tvUserName.setText(userData.getName());
-
-        getReferredFriendList(userData.getReferralCode());
+        getReferredFriendList(getSharedPreferences("user", Context.MODE_PRIVATE).getString("referral_code", ""));
 
     }
 

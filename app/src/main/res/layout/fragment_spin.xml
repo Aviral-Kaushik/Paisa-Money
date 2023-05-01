@@ -9,29 +9,34 @@
     android:background="#FFFBF4"
     tools:context=".Fragments.SpinFragment">
 
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Spin Wheel"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:fontFamily="@font/lato_regular"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/spin_wheel"
-        android:fontFamily="@font/lato_bold"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:layout_marginStart="35dp"
-        android:layout_marginTop="22dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_balance"
-        android:layout_width="90dp"
-        android:layout_height="40dp"
-        android:background="@drawable/balance_bakcgrond"
-        android:text="@string/dummy_balance"
+        android:text=""
+        android:textSize="14sp"
+        android:fontFamily="@font/lato_regular"
+        android:id="@+id/balance"
         android:textColor="@color/white"
-        android:textSize="18sp"
-        android:layout_marginTop="15dp"
+        android:background="@drawable/cash_expandable"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/title"
+        app:layout_constraintBottom_toBottomOf="@id/title"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"/>
 
     <TextView
         android:id="@+id/tv_chances"

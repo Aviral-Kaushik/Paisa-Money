@@ -37,16 +37,13 @@ public class WonPriceClaimDialog extends DialogFragment implements IUnityAdsInit
     private String wonAmount;
     private String source;
     private Activity activity;
-    private UserData userData;
 
     public WonPriceClaimDialog(String wonAmount,
                                String source,
-                               Activity activity,
-                               UserData userData) {
+                               Activity activity) {
         this.wonAmount = wonAmount;
         this.source = source;
         this.activity = activity;
-        this.userData = userData;
     }
 
     public WonPriceClaimDialog() {

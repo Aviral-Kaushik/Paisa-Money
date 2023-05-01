@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.aviral.eaa1.Activity.MainActivity;
 import com.aviral.eaa1.Activity.WithdrawActivity;
 import com.aviral.eaa1.Adapter.OptionsRecyclerViewAdapter;
 import com.aviral.eaa1.Models.EarningOptions;
@@ -31,9 +32,14 @@ import java.util.Calendar;
 
 public class EarnMoneyFragment extends Fragment {
 
-    private EarnMoneyFragmentBinding binding;
+    private final MainActivity mainActivity;
 
-    private UserData userData;
+    public EarnMoneyFragment(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+    }
+
+    public EarnMoneyFragmentBinding binding;
+
 
     private int dailyBonusChances, watchVideoChances, collectRewardsChances, goldPointsChances;
 
@@ -43,13 +49,19 @@ public class EarnMoneyFragment extends Fragment {
 
         binding = EarnMoneyFragmentBinding.inflate(inflater, container, false);
 
+
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         binding.earnMoneyScrollView.fullScroll(ScrollView.FOCUS_UP);
 
-        userData = requireArguments().getParcelable(requireContext().getString(R.string.user_data));
 
-        View view = binding.getRoot();
 
-        binding.userName.setText(userData.getName());
+        binding.userName.setText(mainActivity.getSharedPreferences("user", Context.MODE_PRIVATE).getString("name", ""));
 
         ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
         ArrayList<String> links = backendProvider.getAllLinks();
@@ -63,12 +75,9 @@ public class EarnMoneyFragment extends Fragment {
         binding.buttonWithdraw.setOnClickListener(view1 -> {
 
             Intent intent = new Intent(getContext(), WithdrawActivity.class);
-            intent.putExtra(getString(R.string.user_data), userData);
 
             startActivity(intent);
         });
-
-        return view;
     }
 
     @Override
@@ -77,7 +86,6 @@ public class EarnMoneyFragment extends Fragment {
 
         getChancesFromSharedPreferences();
 
-        fetchUserData();
     }
 
     private void getChancesFromSharedPreferences() {
@@ -115,23 +123,7 @@ public class EarnMoneyFragment extends Fragment {
         setUpOptionAdapter();
     }
 
-    private void fetchUserData() {
 
-        ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
-
-        UserData updatedUserData = backendProvider.fetchUserData(userData.getEmail());
-
-        new Handler().postDelayed(() -> {
-
-            binding.walletBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
-            binding.btnBalance.setText(String.format("₹%s", updatedUserData.getBalance()));
-
-        }, 1000);
-
-
-        userData = updatedUserData;
-
-    }
 
     @Override
     public void onDestroyView() {
@@ -207,13 +199,12 @@ public class EarnMoneyFragment extends Fragment {
         binding.optionsRecyclerView.setLayoutManager(linearLayoutManager);
 
         OptionsRecyclerViewAdapter optionsRecyclerViewAdapter =
-                new OptionsRecyclerViewAdapter(
+                new OptionsRecyclerViewAdapter(mainActivity,
                         requireContext(),
                         getParentFragmentManager(),
                         optionsArrayList,
-                        userData.getUid(),
+                        mainActivity.getSharedPreferences("user", Context.MODE_PRIVATE).getString("uid", ""),
                         chances,
-                        userData,
                         requireActivity(),
                         requireActivity().getApplicationContext()
                 );

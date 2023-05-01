@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gift Card"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:fontFamily="@font/lato_regular"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="14sp"
+            android:fontFamily="@font/lato_regular"
+            android:id="@+id/balance"
+            android:textColor="@color/white"
+            android:background="@drawable/cash_expandable"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/title"
+            app:layout_constraintBottom_toBottomOf="@id/title"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            android:layout_marginTop="40dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="CARD = 20"
+            android:id="@+id/chance_left"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:textSize="20sp"
+            android:fontFamily="@font/lato_regular"
+            android:textColor="#FFBC36" />
+
+        <RelativeLayout
+            app:layout_constraintTop_toBottomOf="@id/chance_left"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="35dp"
+            android:id="@+id/relativeLayout"
+            android:layout_width="300dp"
+            android:layout_height="380dp">
+
+            <RelativeLayout
+                android:layout_centerInParent="true"
+                android:layout_width="300dp"
+                android:layout_height="380dp">
+
+                <androidx.cardview.widget.CardView
+                    app:cardElevation="0dp"
+                    android:id="@+id/card_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    app:cardCornerRadius="25dp">
+
+                    <RelativeLayout
+                        android:visibility="visible"
+                        android:id="@+id/back_r"
+                        android:background="@drawable/edit_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="15dp">
+
+                        <ImageView
+                            android:layout_marginTop="20dp"
+                            android:scaleType="fitCenter"
+                            android:id="@+id/l"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:layout_width="match_parent"
+                            android:layout_height="108dp"
+                            android:src="@drawable/ic_gift" />
+
+                        <TextView
+                            android:id="@+id/c"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/l"
+                            android:layout_centerInParent="true"
+                            android:layout_marginTop="13dp"
+                            android:fontFamily="@font/lato_regular"
+                            android:text="Congratulations"
+                            android:textColor="@color/black"
+                            android:textSize="23sp" />
+
+                        <TextView
+                            android:id="@+id/yw"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/c"
+                            android:layout_centerInParent="true"
+                            android:fontFamily="@font/lato_black"
+                            android:padding="2dp"
+                            android:text="You Won"
+                            android:textColor="#000"
+                            android:textSize="20sp"
+                            android:layout_marginTop="13dp" />
+
+                        <TextView
+                            android:id="@+id/points"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/yw"
+                            android:layout_centerInParent="true"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="@font/lato_bold"
+                            android:text="+ 100"
+                            android:textColor="#000"
+                            android:textSize="26sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_below="@id/points"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/lato_regular"
+                            android:gravity="center"
+                            android:text="Gifts"
+                            android:textColor="#B0000000"
+                            android:textSize="18sp" />
+                    </RelativeLayout>
+
+                    <com.anupkumarpanwar.scratchview.ScratchView
+                    android:id="@+id/scratch_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:overlay_image="@drawable/scratch_card_image_xml"
+                    app:overlay_width="300dp"
+                    app:overlay_height="380dp"
+                    />
+                </androidx.cardview.widget.CardView>
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

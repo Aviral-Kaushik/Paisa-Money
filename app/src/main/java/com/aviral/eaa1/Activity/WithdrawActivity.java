@@ -1,17 +1,27 @@
 package com.aviral.eaa1.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
+import com.aviral.eaa1.Utils.Links;
 import com.aviral.eaa1.databinding.ActivityWithdrawBinding;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DecimalFormat;
+import java.util.Locale;
 
 public class WithdrawActivity extends AppCompatActivity {
 
@@ -24,7 +34,16 @@ public class WithdrawActivity extends AppCompatActivity {
             isPhonePeSelected = false,
             isGooglePaySelected = false;
 
-    private UserData userData;
+
+    float balance;
+
+    public float getBalance() {
+        return balance;
+    }
+
+    public void setBalance(float balance) {
+        this.balance = balance;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,23 +51,10 @@ public class WithdrawActivity extends AppCompatActivity {
         binding = ActivityWithdrawBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        Intent intent = getIntent();
 
-        if (intent.hasExtra(getString(R.string.user_data))) {
-            userData = intent.getParcelableExtra(getString(R.string.user_data));
-        }
+        get_user_balance();
 
-        binding.amount.setText(String.format("₹%s ≈ $%s",
-                userData.getBalance(),
-                INRTODollar(Double.parseDouble(userData.getBalance()))));
 
-        binding.userName.setText(userData.getName());
-        binding.tvUserName.setText(userData.getName());
-
-        binding.payapalAmount.setText(String.format("$%s", INRTODollar(Double.parseDouble(userData.getBalance()))));
-        binding.paytmAmount.setText(String.format("₹%s", userData.getBalance()));
-        binding.phonePeAmount.setText(String.format("₹%s", userData.getBalance()));
-        binding.googlePayAmount.setText(String.format("₹%s", userData.getBalance()));
 
         binding.paypal.setOnClickListener(view -> {
             resetAllPaymentMethods();
@@ -137,7 +143,6 @@ public class WithdrawActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(this, PaymentActivity.class);
                 intent.putExtra(getString(R.string.payment_mode), getString(R.string.paypal));
-                intent.putExtra(getString(R.string.user_data), userData);
                 intent.putExtra(getString(R.string.withdraw_amount), 1.4);
                 startActivity(intent);
 
@@ -156,7 +161,6 @@ public class WithdrawActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(this, PaymentActivity.class);
                 intent.putExtra(getString(R.string.payment_mode), getString(R.string.paytm));
-                intent.putExtra(getString(R.string.user_data), userData);
                 intent.putExtra(getString(R.string.withdraw_amount), 100);
                 startActivity(intent);
 
@@ -176,7 +180,6 @@ public class WithdrawActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(this, PaymentActivity.class);
                 intent.putExtra(getString(R.string.payment_mode), getString(R.string.phonepe));
-                intent.putExtra(getString(R.string.user_data), userData);
                 intent.putExtra(getString(R.string.withdraw_amount), 100);
                 startActivity(intent);
 
@@ -196,7 +199,6 @@ public class WithdrawActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(this, PaymentActivity.class);
                 intent.putExtra(getString(R.string.payment_mode), getString(R.string.gpay));
-                intent.putExtra(getString(R.string.user_data), userData);
                 intent.putExtra(getString(R.string.withdraw_amount), withdrawAmount);
                 startActivity(intent);
 
@@ -238,6 +240,41 @@ public class WithdrawActivity extends AppCompatActivity {
 
         binding.btnContinue.setReversed(true);
 
+    }
+
+    public void get_user_balance(){
+        String uid = getSharedPreferences("user", Context.MODE_PRIVATE).getString("uid", "");
+        AndroidNetworking.post(Links.GET_USER_COINS)
+                .addBodyParameter("user_id", uid)
+                .build().getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("response", response.toString());
+                        try {
+                            float balance = (float) response.getDouble("balance");
+                            setBalance(balance);
+                            binding.amount.setText(String.format("₹%s ≈ $%s",
+                                    getBalance(),
+                                    INRTODollar(getBalance())));
+
+                            binding.userName.setText(getSharedPreferences("user", Context.MODE_PRIVATE).getString("name", ""));
+                            binding.tvUserName.setText(getSharedPreferences("user", Context.MODE_PRIVATE).getString("name", ""));
+
+                            binding.payapalAmount.setText(String.format("$%s", INRTODollar(getBalance())));
+                            binding.paytmAmount.setText(String.format("₹%s", getBalance()));
+                            binding.phonePeAmount.setText(String.format("₹%s", getBalance()));
+                            binding.googlePayAmount.setText(String.format("₹%s", getBalance()));
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                    }
+                });
     }
 
 }

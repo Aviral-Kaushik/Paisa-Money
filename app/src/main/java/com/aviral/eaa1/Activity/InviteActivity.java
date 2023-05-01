@@ -9,16 +9,25 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
+import com.aviral.eaa1.Utils.Links;
 import com.aviral.eaa1.databinding.ActivityInviteBinding;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Locale;
 
 public class InviteActivity extends AppCompatActivity {
 
     private ActivityInviteBinding binding;
+    String referral_code;
 
-    private UserData userData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,16 +35,10 @@ public class InviteActivity extends AppCompatActivity {
         binding = ActivityInviteBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        userData = new UserData();
 
-        Intent intent = getIntent();
+        referral_code = getSharedPreferences("user", Context.MODE_PRIVATE).getString("referral_code", "");
 
-        if (intent.hasExtra(getString(R.string.user_data))) {
-            userData = intent.getParcelableExtra(getString(R.string.user_data));
-        }
-
-        binding.referralCode.setText(userData.getReferralCode());
-        binding.btnBalance.setText(String.format("₹%s", userData.getBalance()));
+        binding.referralCode.setText(referral_code);
 
         binding.shareWhatsapp.setOnClickListener(view -> sendWhatsappMessage());
         binding.shareTelegram.setOnClickListener(view -> sendTelegramMessage());
@@ -43,13 +46,14 @@ public class InviteActivity extends AppCompatActivity {
 
         binding.copy.setOnClickListener(view -> copyReferralCodeToClipboard());
         binding.copyText.setOnClickListener(view -> copyReferralCodeToClipboard());
+        get_user_balance();
     }
 
 
     private String getShareMessage() {
         return "Paisamoney is an earning app that allows you to make money simply by completing tasks and referring your friends. With Paisamoney, you can earn real cash and withdraw your earnings via multiple payment channel.\n" +
                 "\n" +
-                "The best part is, if you sign up using my referral code " + userData.getReferralCode() + ", you'll receive a bonus to start earning right away!\n" +
+                "The best part is, if you sign up using my referral code " + referral_code + ", you'll receive a bonus to start earning right away!\n" +
                 "\n" +
                 "I highly recommend giving Paisamoney a try – it's a fun and easy way to earn some extra income. And with my referral code, you'll have a head start!";
     }
@@ -85,5 +89,29 @@ public class InviteActivity extends AppCompatActivity {
                 , "Referral Code Copied to Clipboard",
                 Snackbar.LENGTH_SHORT);
         snackbar.show();
+    }
+
+    public void get_user_balance(){
+        binding.btnBalance.setText("----");
+        String uid = getSharedPreferences("user", Context.MODE_PRIVATE).getString("uid", "");
+        AndroidNetworking.post(Links.GET_USER_COINS)
+                .addBodyParameter("user_id", uid)
+                .build().getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            float balance = (float) response.getDouble("balance");
+                            String balance_text = "₹"+String.format(Locale.US, "%.2f", balance);
+                            binding.btnBalance.setText(balance_text);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+
+                    }
+                });
     }
 }

@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.aviral.eaa1.Activity.MainActivity;
 import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
 import com.aviral.eaa1.Fragments.EarnMoneyFragment;
 import com.aviral.eaa1.Fragments.OptionChances;
@@ -47,6 +48,8 @@ public class OptionsRecyclerViewAdapter
 
     private static final String TAG = "AviralAPI";
 
+    private MainActivity mainActivity;
+
     private static final String TAG_ADD = "AviralAds";
 
     private final ArrayList<EarningOptions> optionList;
@@ -54,22 +57,20 @@ public class OptionsRecyclerViewAdapter
     private final FragmentManager fragmentManager;
     private final String uid;
     private final OptionChances chances;
-    private final UserData userData;
     private final Activity activity;
-    public OptionsRecyclerViewAdapter(Context context,
+    public OptionsRecyclerViewAdapter(MainActivity mainActivity, Context context,
                                       FragmentManager fragmentManager,
                                       ArrayList<EarningOptions> optionList,
                                       String uid,
                                       OptionChances chances,
-                                      UserData userData,
                                       Activity activity,
                                       Context applicationContext) {
+        this.mainActivity = mainActivity;
         this.context = context;
         this.fragmentManager = fragmentManager;
         this.optionList = optionList;
         this.uid = uid;
         this.chances = chances;
-        this.userData = userData;
         this.activity = activity;
 
         UnityAds.initialize(applicationContext,
@@ -237,28 +238,7 @@ public class OptionsRecyclerViewAdapter
 
         decrementChances(rewardName);
 
-        new Handler().postDelayed(() -> {
-
-            Bundle userDataBundle = new Bundle();
-
-            userDataBundle.putParcelable(context.getString(R.string.user_data), userData);
-
-            EarnMoneyFragment earnMoneyFragment = new EarnMoneyFragment();
-            earnMoneyFragment.setArguments(userDataBundle);
-            FragmentTransaction fragmentTransaction = fragmentManager
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_in,
-                            R.anim.fade_out,
-                            R.anim.fade_in,
-                            R.anim.slide_out
-                    );
-            fragmentTransaction.attach(earnMoneyFragment);
-            fragmentTransaction.detach(earnMoneyFragment);
-            fragmentTransaction.attach(earnMoneyFragment);
-            fragmentTransaction.replace(R.id.main_container, earnMoneyFragment);
-            fragmentTransaction.commitAllowingStateLoss();
-        }, 1000);
+        mainActivity.get_user_balance();
 
     }
 
@@ -571,8 +551,7 @@ public class OptionsRecyclerViewAdapter
         WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
                 "₹" + optionList.get(position).getOptionEarningAmount(),
                 context.getString(R.string.options),
-                activity,
-                userData
+                activity
         );
 
         updateUserBalance(

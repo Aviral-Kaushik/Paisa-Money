@@ -1,5 +1,7 @@
 package com.aviral.eaa1.Fragments;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,16 +13,24 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
+import com.aviral.eaa1.Activity.MainActivity;
 import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.AdsParameters;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
+import com.aviral.eaa1.Utils.Links;
 import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.databinding.FragmentSpinBinding;
 import com.google.android.material.snackbar.Snackbar;
@@ -30,13 +40,23 @@ import com.unity3d.ads.IUnityAdsShowListener;
 import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.UnityAdsShowOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Random;
 
 public class SpinFragment extends Fragment implements IUnityAdsInitializationListener {
 
+    private MainActivity mainActivity;
+
+    public SpinFragment(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+    }
+    private Activity activity;
+
     private static final String TAG = "AviralAds";
 
-    private FragmentSpinBinding binding;
+    public FragmentSpinBinding binding;
 
     final double[] sectors = {0.20, 0.75, 0.05, 0.25, 0.15, 1.00, 0.10, 0.50};
     final int[] sectorsDegree = new int[sectors.length];
@@ -46,7 +66,6 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
 
     Random random = new Random();
 
-    private UserData userData;
 
     private int chancesLeft;
 
@@ -62,41 +81,40 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
 
         binding = FragmentSpinBinding.inflate(inflater, container, false);
 
-        userData = requireArguments().getParcelable(requireContext().getString(R.string.user_data));
 
-        UnityAds.initialize(requireActivity().getApplicationContext(),
+
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        activity = getActivity();
+        UnityAds.initialize(activity.getApplicationContext(),
                 AdsParameters.unityGameID, AdsParameters.testMode, this);
 
         backendProvider = new ApiBackendProvider(requireContext());
 
-        View view = binding.getRoot();
-
         loadingDialog = new LoadingDialog(requireContext());
-        loadingDialog.show();
 
-        binding.btnBalance.setText(String.format("₹%s", userData.getBalance()));
 
         getChances();
 
         binding.btnSpin.setOnSlideCompleteListener(slideToActView -> startSpin());
-
-        return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        loadingDialog.show();
-
-        fetchUserData();
 
     }
 
     private final IUnityAdsLoadListener loadListener = new IUnityAdsLoadListener() {
         @Override
         public void onUnityAdsAdLoaded(String placementId) {
-            UnityAds.show(requireActivity(), AdsParameters.rewardedAndroidAdUnitId, new UnityAdsShowOptions(), showListener);
+
         }
 
         @Override
@@ -132,7 +150,7 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
 //                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
 //                        "₹" + earnedAmount,
 //                        getString(R.string.spin_fragment),
-//                        requireActivity());
+//                        activity);
 //
 //                updateUserBalance(earnedAmount);
 //
@@ -166,15 +184,6 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
 
     }
 
-    private void fetchUserData() {
-
-        ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
-
-        userData = backendProvider.fetchUserData(userData.getEmail());
-
-        loadingDialog.dismiss();
-
-    }
 
     private void startSpin() {
         generateSectorDegree();
@@ -224,8 +233,8 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
 //                decrementChances();
 
 
-                binding.btnBalance.setText(String.format("₹%s",
-                        Double.parseDouble(userData.getBalance())
+                binding.balance.setText(String.format("₹%s",
+                        Double.parseDouble(String.valueOf(mainActivity.getBalance()))
                                 + earnedAmount));
 
 //                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
@@ -252,43 +261,10 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
 
     }
 
-    private void updateUserBalance(double earnedAmount) {
-
-//        loadingDialog.show();
-
-        backendProvider.updateUserBalance(
-                userData.getUid(),
-                String.valueOf(earnedAmount)
-        );
-
-        new Handler().postDelayed(() -> {
-            loadingDialog.dismiss();
-
-            Bundle userDataBundle = new Bundle();
-            userDataBundle.putParcelable(getString(R.string.user_data), userData);
-
-            SpinFragment spinFragment = new SpinFragment();
-            spinFragment.setArguments(userDataBundle);
-            FragmentTransaction fragmentTransaction1 = getParentFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_in,
-                            R.anim.fade_out,
-                            R.anim.fade_in,
-                            R.anim.slide_out
-                    );
-            fragmentTransaction1.attach(spinFragment);
-            fragmentTransaction1.detach(spinFragment);
-            fragmentTransaction1.attach(spinFragment);
-            fragmentTransaction1.replace(R.id.main_container, spinFragment);
-            fragmentTransaction1.commitAllowingStateLoss();
-        }, 2000);
-
-    }
 
 
     private void decrementChances() {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("spinChances", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("spinChances", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         if (chancesLeft > 0) {
@@ -312,29 +288,73 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
 
     public void DisplayRewardedAd() {
         UnityAds.load(AdsParameters.rewardedAndroidAdUnitId, loadListener);
+        UnityAds.show(activity, "Rewarded_Android", new UnityAdsShowOptions(), showListener);
 
 
-        new Handler().postDelayed(() -> {
-
-            spinning = false;
-
-            decrementChances();
-
-            WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
-                    "₹" + earnedAmount,
-                    getString(R.string.spin_fragment),
-                    requireActivity(),
-                    userData);
-
+//        new Handler().postDelayed(() -> {
+//
+//            spinning = false;
+//
+//            decrementChances();
+//
+//            WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
+//                    "₹" + earnedAmount,
+//                    getString(R.string.spin_fragment),
+//                    activity);
+//
+//            updateUserBalance(earnedAmount);
+//
+//            wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
+//        }, 1000);
+        Dialog dialog = new Dialog(activity);
+        dialog.setContentView(R.layout.layout_won_price_dialog);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        if (dialog.getWindow()!=null){
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+        dialog.show();
+        TextView earnedAmountText = dialog.findViewById(R.id.tv_amount);
+        earnedAmountText.setText("₹"+earnedAmount);
+        ConstraintLayout wonPrice = dialog.findViewById(R.id.wonPrice);
+        wonPrice.setOnClickListener(v -> {
+            if (dialog.isShowing()){
+                dialog.dismiss();
+            }
+            UnityAds.load(AdsParameters.rewardedAndroidAdUnitId, loadListener);
+            UnityAds.show(activity, "Interstitial_Android", new UnityAdsShowOptions(), showListener);
             updateUserBalance(earnedAmount);
-
-            wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
-        }, 1000);
+        });
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void updateUserBalance(double value){
+        String uid = activity.getSharedPreferences("user", Context.MODE_PRIVATE).getString("uid", "");
+        String balance_add = String.valueOf(value);
+        AndroidNetworking.post(Links.UPDATE_USER_BALANCE)
+                .addBodyParameter("user_id", uid)
+                .addBodyParameter("value", balance_add)
+                .build().getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("updated")){
+                                mainActivity.get_user_balance();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                    }
+                });
     }
 }

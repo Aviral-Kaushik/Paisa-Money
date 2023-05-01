@@ -1,5 +1,7 @@
 package com.aviral.eaa1.Fragments;
 
+import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -8,18 +10,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.anupkumarpanwar.scratchview.ScratchView;
+import com.aviral.eaa1.Activity.MainActivity;
 import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
 import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.AdsParameters;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
+import com.aviral.eaa1.Utils.Links;
 import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.databinding.FragmentScratchCardBinding;
 import com.unity3d.ads.IUnityAdsInitializationListener;
@@ -28,21 +38,25 @@ import com.unity3d.ads.IUnityAdsShowListener;
 import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.UnityAdsShowOptions;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Random;
 
 public class ScratchCardFragment extends Fragment implements IUnityAdsInitializationListener {
+    private MainActivity mainActivity;
 
+    public ScratchCardFragment(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+    }
     private static final String TAG = "AviralAds";
 
-    private FragmentScratchCardBinding binding;
+    public FragmentScratchCardBinding binding;
 
-    private UserData userData;
 
     private int chancesLeft;
 
     private LoadingDialog loadingDialog;
-
-    private ApiBackendProvider backendProvider;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -50,21 +64,16 @@ public class ScratchCardFragment extends Fragment implements IUnityAdsInitializa
 
         binding = FragmentScratchCardBinding.inflate(inflater, container, false);
 
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         UnityAds.initialize(requireActivity().getApplicationContext(),
                 AdsParameters.unityGameID, AdsParameters.testMode, this);
 
-        userData = requireArguments().getParcelable(requireContext().getString(R.string.user_data));
-
-        backendProvider = new ApiBackendProvider(requireContext());
-
-        View view = binding.getRoot();
-
         loadingDialog = new LoadingDialog(requireContext());
-        loadingDialog.show();
-
-        binding.amountWon.setText(String.format("₹%s", generateRandomNumber()));
-
-        binding.btnBalance.setText(String.format("₹%s", userData.getBalance()));
 
         getChances();
 
@@ -80,7 +89,7 @@ public class ScratchCardFragment extends Fragment implements IUnityAdsInitializa
 //                updateUserBalance(binding.amountWon.getText().toString().substring(1));
 //
                 binding.btnBalance.setText(String.format("₹%s",
-                        Double.parseDouble(userData.getBalance())
+                        Double.parseDouble(String.valueOf(mainActivity.getBalance()))
                                 + Double.parseDouble(binding.amountWon.getText().toString().substring(1))));
 
 //                updateUserBalance(binding.amountWon.getText().toString().substring(1));
@@ -96,8 +105,6 @@ public class ScratchCardFragment extends Fragment implements IUnityAdsInitializa
 
             }
         });
-
-        return view;
     }
 
     private final IUnityAdsLoadListener loadListener = new IUnityAdsLoadListener() {
@@ -159,54 +166,12 @@ public class ScratchCardFragment extends Fragment implements IUnityAdsInitializa
     @Override
     public void onStart() {
         super.onStart();
-        loadingDialog.show();
 
-        fetchUserData();
-    }
-
-    private void fetchUserData() {
-
-        ApiBackendProvider backendProvider = new ApiBackendProvider(requireContext());
-
-        userData = backendProvider.fetchUserData(userData.getEmail());
-
-        loadingDialog.dismiss();
 
     }
 
-    private void updateUserBalance(String earnedAmount) {
 
-//        loadingDialog.show();
 
-        backendProvider.updateUserBalance(
-                userData.getUid(),
-                String.valueOf(earnedAmount)
-        );
-
-        new Handler().postDelayed(() -> {
-            loadingDialog.dismiss();
-
-            Bundle userDataBundle = new Bundle();
-            userDataBundle.putParcelable(getString(R.string.user_data), userData);
-
-            ScratchCardFragment scratchCardFragment = new ScratchCardFragment();
-            scratchCardFragment.setArguments(userDataBundle);
-            FragmentTransaction fragmentTransaction = getParentFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(
-                            R.anim.slide_in,
-                            R.anim.fade_out,
-                            R.anim.fade_in,
-                            R.anim.slide_out
-                    );
-            fragmentTransaction.attach(scratchCardFragment);
-            fragmentTransaction.detach(scratchCardFragment);
-            fragmentTransaction.attach(scratchCardFragment);
-            fragmentTransaction.replace(R.id.main_container, scratchCardFragment);
-            fragmentTransaction.commitAllowingStateLoss();
-        }, 2000);
-
-    }
 
     private void getChances() {
         SharedPreferences chancesPreferences = requireActivity().getSharedPreferences("scratchChances", Context.MODE_PRIVATE);
@@ -252,26 +217,71 @@ public class ScratchCardFragment extends Fragment implements IUnityAdsInitializa
         return Math.round(randomDouble * 100.0) / 100.0;
     }
 
+    @SuppressLint("SetTextI18n")
     public void DisplayRewardedAd() {
         UnityAds.load(AdsParameters.rewardedAndroidAdUnitId, loadListener);
+        UnityAds.show(mainActivity, "Rewarded_Android", new UnityAdsShowOptions(), showListener);
 
         decrementChances();
 
-        WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
-                binding.amountWon.getText().toString(),
-                getString(R.string.scratch_fragment),
-                requireActivity(),
-                userData);
-
-        updateUserBalance(binding.amountWon.getText().toString().substring(1));
-
-        wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
+//        WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
+//                binding.amountWon.getText().toString(),
+//                getString(R.string.scratch_fragment),
+//                requireActivity());
+//
+//        updateUserBalance(Double.parseDouble(binding.amountWon.getText().toString().substring(1)));
+//
+//        wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
+        Dialog dialog = new Dialog(mainActivity);
+        dialog.setContentView(R.layout.layout_won_price_dialog);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        if (dialog.getWindow()!=null){
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+        dialog.show();
+        TextView earnedAmountText = dialog.findViewById(R.id.tv_amount);
+        earnedAmountText.setText("₹"+(Double.parseDouble(binding.amountWon.getText().toString().substring(1))));
+        ConstraintLayout wonPrice = dialog.findViewById(R.id.wonPrice);
+        wonPrice.setOnClickListener(v -> {
+            if (dialog.isShowing()){
+                dialog.dismiss();
+            }
+            UnityAds.load(AdsParameters.rewardedAndroidAdUnitId, loadListener);
+            UnityAds.show(mainActivity, "Interstitial_Android", new UnityAdsShowOptions(), showListener);
+            updateUserBalance(Double.parseDouble(binding.amountWon.getText().toString().substring(1)));
+        });
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void updateUserBalance(double value){
+        String uid = mainActivity.getSharedPreferences("user", Context.MODE_PRIVATE).getString("uid", "");
+        String balance_add = String.valueOf(value);
+        AndroidNetworking.post(Links.UPDATE_USER_BALANCE)
+                .addBodyParameter("user_id", uid)
+                .addBodyParameter("value", balance_add)
+                .build().getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("updated")){
+                                mainActivity.get_user_balance();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                    }
+                });
     }
 
 }

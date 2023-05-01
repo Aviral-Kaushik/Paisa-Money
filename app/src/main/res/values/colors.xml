@@ -14,4 +14,5 @@
     <color name="selected_payment_mode">#FFBC36</color>
     <color name="payment_method_tv">#80000000</color>
     <color name="black_70">#B3000000</color>
+    <color name="black70">#80000000</color>
 </resources>
