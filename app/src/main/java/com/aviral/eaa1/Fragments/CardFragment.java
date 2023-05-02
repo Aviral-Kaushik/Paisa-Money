@@ -44,6 +44,9 @@ import org.json.JSONObject;
 import java.util.Locale;
 
 public class CardFragment extends Fragment implements IUnityAdsInitializationListener {
+
+    private static final String TAG = "AviralAds";
+
     public ScratchViewBinding binding;
     private Activity activity;
     int chancesLeft;
@@ -56,14 +59,49 @@ public class CardFragment extends Fragment implements IUnityAdsInitializationLis
     private LoadingDialog hideDialog;
     double reward;
 
+    private final IUnityAdsLoadListener loadListener = new IUnityAdsLoadListener() {
+        @Override
+        public void onUnityAdsAdLoaded(String placementId) {
+            UnityAds.show(requireActivity(), AdsParameters.rewardedAndroidAdUnitId, new UnityAdsShowOptions(), showListener);
+        }
+
+        @Override
+        public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
+            Log.d(TAG, "Unity Ads failed to load ad for " + placementId + " with error: [" + error + "] " + message);
+        }
+    };
+
+    private final IUnityAdsShowListener showListener = new IUnityAdsShowListener() {
+        @Override
+        public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
+            Log.d(TAG, "Unity Ads failed to show ad for " + placementId + " with error: [" + error + "] " + message);
+        }
+
+        @Override
+        public void onUnityAdsShowStart(String placementId) {
+            Log.d(TAG, "onUnityAdsShowStart: " + placementId);
+        }
+
+        @Override
+        public void onUnityAdsShowClick(String placementId) {
+            Log.d(TAG, "onUnityAdsShowClick: " + placementId);
+        }
+
+        @Override
+        public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
+            Log.d(TAG, "onUnityAdsShowComplete: " + placementId);
+
+        }
+    };
+
     private void DisplayRewarded(){
-        UnityAds.load("Rewarded_Android", loadListener);
+        UnityAds.load(AdsParameters.rewardedAndroidAdUnitId, loadListener);
         UnityAds.show(activity, "Rewarded_Android", new UnityAdsShowOptions(), showListener);
     }
 
     private void DisplayInterstitial(){
-        UnityAds.load("Interstitial_Android", loadListener);
-        UnityAds.show(activity, "Interstitial_Android", new UnityAdsShowOptions(), showListener);
+        UnityAds.load(AdsParameters.interstitialAndroidAdUnitId, loadListener);
+        UnityAds.show(mainActivity, "Interstitial_Android", new UnityAdsShowOptions(), showListener);
     }
 
     @Override
@@ -76,39 +114,6 @@ public class CardFragment extends Fragment implements IUnityAdsInitializationLis
     public void onInitializationFailed(UnityAds.UnityAdsInitializationError error, String message) {
 
     }
-
-    private IUnityAdsLoadListener loadListener = new IUnityAdsLoadListener() {
-        @Override
-        public void onUnityAdsAdLoaded(String placementId) {
-
-        }
-
-        @Override
-        public void onUnityAdsFailedToLoad(String placementId, UnityAds.UnityAdsLoadError error, String message) {
-        }
-    };
-
-    private IUnityAdsShowListener showListener = new IUnityAdsShowListener() {
-        @Override
-        public void onUnityAdsShowFailure(String placementId, UnityAds.UnityAdsShowError error, String message) {
-
-        }
-
-        @Override
-        public void onUnityAdsShowStart(String placementId) {
-
-        }
-
-        @Override
-        public void onUnityAdsShowClick(String placementId) {
-
-        }
-
-        @Override
-        public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
-
-        }
-    };
 
     public CardFragment(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
@@ -125,18 +130,25 @@ public class CardFragment extends Fragment implements IUnityAdsInitializationLis
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         activity = getActivity();
+
         if (activity != null && isAdded()){
+
             double lower = 0.10;
             double upper = 0.50;
+
             reward = Math.random() * (upper - lower) + lower;
             binding.points.setText("₹"+String.format(Locale.US, "%.2f", reward));
+
             UnityAds.initialize(requireActivity().getApplicationContext(),
                     AdsParameters.unityGameID, AdsParameters.testMode, this);
+
             hideDialog = new LoadingDialog(activity);
+
             sharedPreferences = activity.getSharedPreferences("prefs", Context.MODE_PRIVATE);
             editor = sharedPreferences.edit();
             chancesLeft = sharedPreferences.getInt("clsc", 20);
-            binding.chanceLeft.setText("CARD = " + chancesLeft);
+
+            binding.chanceLeft.setText(chancesLeft + " Chances left");
             binding.scratchView.setStrokeWidth(20);
             binding.scratchView.setBackground(null);
             binding.scratchView.setRevealListener(new ScratchView.IRevealListener() {
@@ -144,16 +156,21 @@ public class CardFragment extends Fragment implements IUnityAdsInitializationLis
                 @Override
                 public void onRevealed(ScratchView scratchView) {
                     if (chancesLeft == 0){
-                        binding.chanceLeft.setText("CARD = 0");
+                        binding.chanceLeft.setText("0 Chance left");
                         Toast.makeText(activity, "No chances left", Toast.LENGTH_SHORT).show();
                     }
                     else{
+
                         scratchView.reveal();
+
                         DisplayInterstitial();
+
                         chancesLeft = chancesLeft -1;
                         editor.putInt("clsc", chancesLeft);
                         editor.apply();
-                        binding.chanceLeft.setText("CARD = "+chancesLeft);
+
+                        binding.chanceLeft.setText(chancesLeft + " Chances left");
+
                         Dialog dialog = new Dialog(mainActivity);
                         dialog.setContentView(R.layout.layout_won_price_dialog);
                         dialog.setCanceledOnTouchOutside(false);
@@ -162,16 +179,21 @@ public class CardFragment extends Fragment implements IUnityAdsInitializationLis
                             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                         }
                         dialog.show();
+
                         TextView earnedAmountText = dialog.findViewById(R.id.tv_amount);
                         earnedAmountText.setText("₹"+String.format(Locale.US, "%.2f", reward));
                         ConstraintLayout wonPrice = dialog.findViewById(R.id.wonPrice);
                         wonPrice.setOnClickListener(v -> {
+
                             scratchView.clear();
                             scratchView.mask();
+
                             DisplayRewarded();
+
                             if (dialog.isShowing()){
                                 dialog.dismiss();
                             }
+
                             reward = Math.random() * (upper - lower) + lower;
                             new Handler().postDelayed(new Runnable() {
                                 @SuppressLint("SetTextI18n")
@@ -215,7 +237,7 @@ public class CardFragment extends Fragment implements IUnityAdsInitializationLis
                 editor.apply();
                 SharedPreferences sharedPreferencesCLs = activity.getSharedPreferences("prefs", Context.MODE_PRIVATE);
                 int c = sharedPreferencesCLs.getInt("clsc", 0);
-                binding.chanceLeft.setText("CARD = " + chancesLeft);
+                binding.chanceLeft.setText(chancesLeft + "Chances left");
             }
         };
         countDownTimer.start();

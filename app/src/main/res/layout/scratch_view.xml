@@ -27,16 +27,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:textSize="14sp"
-            android:fontFamily="@font/lato_regular"
+            android:textSize="18sp"
+            android:fontFamily="@font/lato_bold"
             android:id="@+id/balance"
             android:textColor="@color/white"
-            android:background="@drawable/cash_expandable"
+            android:background="@drawable/balance_bakcgrond"
             android:padding="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/title"
             app:layout_constraintBottom_toBottomOf="@id/title"
-            android:layout_marginEnd="20dp"
             android:layout_marginTop="10dp"/>
 
         <TextView
@@ -46,7 +45,7 @@
             android:layout_marginTop="40dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:text="CARD = 20"
+            android:text="10 Chances Left"
             android:id="@+id/chance_left"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
@@ -89,13 +88,13 @@
                         android:padding="15dp">
 
                         <ImageView
-                            android:layout_marginTop="20dp"
+                            android:layout_marginTop="35dp"
                             android:scaleType="fitCenter"
                             android:id="@+id/l"
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
-                            android:layout_width="match_parent"
-                            android:layout_height="108dp"
+                            android:layout_width="55dp"
+                            android:layout_height="55dp"
                             android:src="@drawable/ic_gift" />
 
                         <TextView
@@ -104,10 +103,10 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/l"
                             android:layout_centerInParent="true"
-                            android:layout_marginTop="13dp"
+                            android:layout_marginTop="30dp"
                             android:fontFamily="@font/lato_regular"
                             android:text="Congratulations"
-                            android:textColor="@color/black"
+                            android:textColor="#E87F78"
                             android:textSize="23sp" />
 
                         <TextView
@@ -121,7 +120,7 @@
                             android:text="You Won"
                             android:textColor="#000"
                             android:textSize="20sp"
-                            android:layout_marginTop="13dp" />
+                            android:layout_marginTop="20dp" />
 
                         <TextView
                             android:id="@+id/points"
@@ -129,23 +128,13 @@
                             android:layout_height="wrap_content"
                             android:layout_below="@+id/yw"
                             android:layout_centerInParent="true"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="20dp"
                             android:fontFamily="@font/lato_bold"
                             android:text="+ 100"
                             android:textColor="#000"
                             android:textSize="26sp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_below="@id/points"
-                            android:layout_marginTop="5dp"
-                            android:fontFamily="@font/lato_regular"
-                            android:gravity="center"
-                            android:text="Gifts"
-                            android:textColor="#B0000000"
-                            android:textSize="18sp" />
+
                     </RelativeLayout>
 
                     <com.anupkumarpanwar.scratchview.ScratchView

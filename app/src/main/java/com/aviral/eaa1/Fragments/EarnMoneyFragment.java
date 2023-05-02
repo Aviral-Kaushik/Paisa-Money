@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +20,6 @@ import com.aviral.eaa1.Activity.MainActivity;
 import com.aviral.eaa1.Activity.WithdrawActivity;
 import com.aviral.eaa1.Adapter.OptionsRecyclerViewAdapter;
 import com.aviral.eaa1.Models.EarningOptions;
-import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
 import com.aviral.eaa1.Utils.RecyclerViewMargin;
@@ -40,7 +38,6 @@ public class EarnMoneyFragment extends Fragment {
 
     public EarnMoneyFragmentBinding binding;
 
-
     private int dailyBonusChances, watchVideoChances, collectRewardsChances, goldPointsChances;
 
     @Nullable
@@ -49,8 +46,6 @@ public class EarnMoneyFragment extends Fragment {
 
         binding = EarnMoneyFragmentBinding.inflate(inflater, container, false);
 
-
-
         return binding.getRoot();
     }
 
@@ -58,8 +53,6 @@ public class EarnMoneyFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         binding.earnMoneyScrollView.fullScroll(ScrollView.FOCUS_UP);
-
-
 
         binding.userName.setText(mainActivity.getSharedPreferences("user", Context.MODE_PRIVATE).getString("name", ""));
 
@@ -209,7 +202,7 @@ public class EarnMoneyFragment extends Fragment {
                         requireActivity().getApplicationContext()
                 );
 
-        RecyclerViewMargin recyclerViewMargin = new RecyclerViewMargin(3);
+        RecyclerViewMargin recyclerViewMargin = new RecyclerViewMargin(1);
         binding.optionsRecyclerView.addItemDecoration(recyclerViewMargin);
 
         binding.optionsRecyclerView.setAdapter(optionsRecyclerViewAdapter);

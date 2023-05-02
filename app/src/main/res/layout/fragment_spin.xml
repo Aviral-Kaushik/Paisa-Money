@@ -22,20 +22,20 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        android:textSize="14sp"
-        android:fontFamily="@font/lato_regular"
+        android:textSize="18sp"
+        android:fontFamily="@font/lato_bold"
         android:id="@+id/balance"
         android:textColor="@color/white"
-        android:background="@drawable/cash_expandable"
+        android:background="@drawable/balance_bakcgrond"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/title"
         app:layout_constraintBottom_toBottomOf="@id/title"
-        android:layout_marginEnd="20dp"
         android:layout_marginTop="10dp"/>
 
     <TextView

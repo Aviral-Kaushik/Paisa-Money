@@ -49,15 +49,14 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
 
 
-
     private final EarnMoneyFragment earnMoneyFragment = new EarnMoneyFragment(this);
     public ProfileFragment profileFragment = new ProfileFragment(this);
     private final SpinFragment spinFragment = new SpinFragment(this);
     private final CardFragment cardFragment = new CardFragment(this);
     public final FragmentManager fm = getSupportFragmentManager();
     public Fragment active_fragment = earnMoneyFragment;
-    public int offer_complete;
 
+    public int offer_complete;
 
     String spin;
     String scratch;
@@ -184,8 +183,6 @@ public class MainActivity extends AppCompatActivity implements NavigationBarView
         }
         return true;
     }
-
-
 
     private void getUserDetails() {
         SharedPreferences sharedPreferences = getSharedPreferences("Check", Context.MODE_PRIVATE);

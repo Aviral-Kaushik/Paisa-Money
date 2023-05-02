@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,16 +16,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.aviral.eaa1.Activity.MainActivity;
-import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
-import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.AdsParameters;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
@@ -43,11 +40,12 @@ import com.unity3d.ads.UnityAdsShowOptions;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DecimalFormat;
 import java.util.Random;
 
 public class SpinFragment extends Fragment implements IUnityAdsInitializationListener {
 
-    private MainActivity mainActivity;
+    private final MainActivity mainActivity;
 
     public SpinFragment(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
@@ -142,21 +140,7 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
         @Override
         public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
             Log.d(TAG, "onUnityAdsShowComplete: " + placementId);
-//            if (state.equals(UnityAds.UnityAdsShowCompletionState.COMPLETED)) {
-//                spinning = false;
-//
-//                decrementChances();
-//
-//                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
-//                        "₹" + earnedAmount,
-//                        getString(R.string.spin_fragment),
-//                        activity);
-//
-//                updateUserBalance(earnedAmount);
-//
-//                wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
-//
-//            }
+
         }
     };
 
@@ -211,7 +195,7 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
                 RotateAnimation.RELATIVE_TO_SELF, 0.5f);
 
         rotateAnimation.setDuration(3600);
-        rotateAnimation.setFillAfter(true);
+//        rotateAnimation.setFillAfter(true);
 
         rotateAnimation.setInterpolator(new DecelerateInterpolator());
 
@@ -227,28 +211,10 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
 
                 DisplayRewardedAd();
 
-//                 Save Earned Amount in Dialog Fragment
-//                spinning = false;
-
-//                decrementChances();
-
-
                 binding.balance.setText(String.format("₹%s",
-                        Double.parseDouble(String.valueOf(mainActivity.getBalance()))
-                                + earnedAmount));
+                        roundOfNumber(Double.parseDouble(String.valueOf(mainActivity.getBalance()))
+                                + earnedAmount)));
 
-//                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
-//                        "₹" + earnedAmount,
-//                        getString(R.string.spin_fragment),
-//                        userData);
-//
-//                wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
-
-//                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog("₹" + earnedAmount);
-//
-//                updateUserBalance(earnedAmount);
-//
-//                wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
             }
 
             @Override
@@ -289,23 +255,10 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
     public void DisplayRewardedAd() {
         UnityAds.load(AdsParameters.rewardedAndroidAdUnitId, loadListener);
         UnityAds.show(activity, "Rewarded_Android", new UnityAdsShowOptions(), showListener);
+        decrementChances();
 
+        updateUserBalance(earnedAmount);
 
-//        new Handler().postDelayed(() -> {
-//
-//            spinning = false;
-//
-//            decrementChances();
-//
-//            WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
-//                    "₹" + earnedAmount,
-//                    getString(R.string.spin_fragment),
-//                    activity);
-//
-//            updateUserBalance(earnedAmount);
-//
-//            wonPriceClaimDialog.show(getParentFragmentManager(), "Earned Amount");
-//        }, 1000);
         Dialog dialog = new Dialog(activity);
         dialog.setContentView(R.layout.layout_won_price_dialog);
         dialog.setCanceledOnTouchOutside(false);
@@ -315,16 +268,44 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
         }
         dialog.show();
         TextView earnedAmountText = dialog.findViewById(R.id.tv_amount);
-        earnedAmountText.setText("₹"+earnedAmount);
+        earnedAmountText.setText(String.format("₹%s", earnedAmount));
         ConstraintLayout wonPrice = dialog.findViewById(R.id.wonPrice);
         wonPrice.setOnClickListener(v -> {
             if (dialog.isShowing()){
                 dialog.dismiss();
             }
-            UnityAds.load(AdsParameters.rewardedAndroidAdUnitId, loadListener);
-            UnityAds.show(activity, "Interstitial_Android", new UnityAdsShowOptions(), showListener);
-            updateUserBalance(earnedAmount);
+            DisplayInterstitial();
+
+            decrementChances();
+
+            getChances();
+
+            spinning = false;
+
+            binding.spinningWheel.setImageDrawable(AppCompatResources.getDrawable(requireContext(), R.drawable.spinning_wheel2));
+
+            binding.btnSpin.resetSlider();
+
+            binding.btnSpin.setOnSlideCompleteListener(slideToActView -> startSpin());
         });
+    }
+
+    private void DisplayInterstitial(){
+        UnityAds.load(AdsParameters.interstitialAndroidAdUnitId, loadListener);
+        UnityAds.show(mainActivity, "Interstitial_Android", new UnityAdsShowOptions(), showListener);
+    }
+
+    private String roundOfNumber(double number) {
+
+        DecimalFormat decimalFormat = new DecimalFormat("#.##");
+
+        String decimalValue = decimalFormat.format(number);
+
+        if (decimalValue.length() == 3) {
+            decimalValue += "0";
+        }
+
+        return decimalValue;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.aviral.eaa1.Adapter;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -17,10 +18,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.androidnetworking.AndroidNetworking;
+import com.androidnetworking.error.ANError;
+import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.aviral.eaa1.Activity.MainActivity;
 import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
 import com.aviral.eaa1.Fragments.EarnMoneyFragment;
@@ -30,6 +35,7 @@ import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.AdsParameters;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
+import com.aviral.eaa1.Utils.Links;
 import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.Utils.TimeUtils;
 import com.bumptech.glide.Glide;
@@ -38,6 +44,9 @@ import com.unity3d.ads.IUnityAdsLoadListener;
 import com.unity3d.ads.IUnityAdsShowListener;
 import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.UnityAdsShowOptions;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -48,10 +57,9 @@ public class OptionsRecyclerViewAdapter
 
     private static final String TAG = "AviralAPI";
 
-    private MainActivity mainActivity;
+    private final MainActivity mainActivity;
 
     private static final String TAG_ADD = "AviralAds";
-
     private final ArrayList<EarningOptions> optionList;
     private final Context context;
     private final FragmentManager fragmentManager;
@@ -109,11 +117,6 @@ public class OptionsRecyclerViewAdapter
         @Override
         public void onUnityAdsShowComplete(String placementId, UnityAds.UnityAdsShowCompletionState state) {
             Log.d(TAG_ADD, "onUnityAdsShowComplete: " + placementId);
-//            if (state.equals(UnityAds.UnityAdsShowCompletionState.COMPLETED)) {
-//
-//            } else {
-//                // Do not reward the user for skipping the ad
-//            }
         }
     };
 
@@ -158,21 +161,8 @@ public class OptionsRecyclerViewAdapter
         if (optionList.get(position).getChancesLeft() > 0) {
 
             holder.itemView.setOnClickListener(view -> {
-//              handle url launch here
-//              openUrl(optionList.get(position).getLink());
 
                 DisplayRewardedAd(position);
-
-//                WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
-//                        "₹" + optionList.get(position).getOptionEarningAmount()
-//                );
-//
-//                updateUserBalance(
-//                        optionList.get(position).getRewardName(),
-//                        String.valueOf(optionList.get(position).getOptionEarningAmount())
-//                );
-//
-//                wonPriceClaimDialog.show(fragmentManager, "Earned Amount");
 
             });
         } else {
@@ -220,26 +210,6 @@ public class OptionsRecyclerViewAdapter
     @Override
     public void onInitializationFailed(UnityAds.UnityAdsInitializationError error, String message) {
         Log.d(TAG_ADD, "onInitializationFailed: Ads Initialization failed " + message);
-    }
-
-    private void updateUserBalance(String rewardName, String earnedAmount) {
-
-        Log.d(TAG, "updateUserBalance: Updating User Balance");
-
-
-        ApiBackendProvider backendProvider = new ApiBackendProvider(context);
-
-        backendProvider.updateUserBalance(
-                uid,
-                String.valueOf(earnedAmount)
-        );
-
-        Log.d(TAG, "updateUserBalance: Updated User Balance");
-
-        decrementChances(rewardName);
-
-        mainActivity.get_user_balance();
-
     }
 
     private void decrementChances(String rewardName) {
@@ -547,19 +517,59 @@ public class OptionsRecyclerViewAdapter
 
     public void DisplayRewardedAd(int position) {
         UnityAds.load(AdsParameters.rewardedAndroidAdUnitId, loadListener);
+        UnityAds.show(activity, "Rewarded_Android", new UnityAdsShowOptions(), showListener);
 
-        WonPriceClaimDialog wonPriceClaimDialog = new WonPriceClaimDialog(
-                "₹" + optionList.get(position).getOptionEarningAmount(),
-                context.getString(R.string.options),
-                activity
-        );
+        decrementChances(optionList.get(position).getRewardName());
 
-        updateUserBalance(
-                optionList.get(position).getRewardName(),
-                String.valueOf(optionList.get(position).getOptionEarningAmount())
-        );
+        updateUserBalanceAndText(optionList.get(position).getOptionEarningAmount());
 
-        wonPriceClaimDialog.show(fragmentManager, "Earned Amount");
+        Dialog dialog = new Dialog(activity);
+        dialog.setContentView(R.layout.layout_won_price_dialog);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
+        if (dialog.getWindow()!=null){
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+        dialog.show();
+        TextView earnedAmountText = dialog.findViewById(R.id.tv_amount);
+        earnedAmountText.setText(String.format("₹%s", optionList.get(position).getOptionEarningAmount()));
+        ConstraintLayout wonPrice = dialog.findViewById(R.id.wonPrice);
+        wonPrice.setOnClickListener(v -> {
+            DisplayInterstitial();
+            if (dialog.isShowing()){
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void DisplayInterstitial(){
+        UnityAds.load(AdsParameters.interstitialAndroidAdUnitId, loadListener);
+        UnityAds.show(mainActivity, "Interstitial_Android", new UnityAdsShowOptions(), showListener);
+    }
+
+    private void updateUserBalanceAndText(double value){
+        String uid = activity.getSharedPreferences("user", Context.MODE_PRIVATE).getString("uid", "");
+        String balance_add = String.valueOf(value);
+        AndroidNetworking.post(Links.UPDATE_USER_BALANCE)
+                .addBodyParameter("user_id", uid)
+                .addBodyParameter("value", balance_add)
+                .build().getAsJSONObject(new JSONObjectRequestListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            String status = response.getString("status");
+                            if (status.equals("updated")){
+                                mainActivity.get_user_balance();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(ANError anError) {
+                    }
+                });
     }
 
 }
