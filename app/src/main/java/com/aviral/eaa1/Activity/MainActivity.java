@@ -4,18 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,13 +23,9 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.aviral.eaa1.Fragments.CardFragment;
 import com.aviral.eaa1.Fragments.EarnMoneyFragment;
 import com.aviral.eaa1.Fragments.ProfileFragment;
-import com.aviral.eaa1.Fragments.ScratchCardFragment;
 import com.aviral.eaa1.Fragments.SpinFragment;
-import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
-import com.aviral.eaa1.Utils.ApiBackendProvider;
 import com.aviral.eaa1.Utils.Links;
-import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.databinding.ActivityMainBinding;
 import com.ayetstudios.publishersdk.AyetSdk;
 import com.google.android.material.navigation.NavigationBarView;
@@ -41,13 +33,11 @@ import com.google.android.material.navigation.NavigationBarView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements NavigationBarView.OnItemSelectedListener {
-
 
     private final EarnMoneyFragment earnMoneyFragment = new EarnMoneyFragment(this);
     public ProfileFragment profileFragment = new ProfileFragment(this);

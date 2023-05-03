@@ -1,6 +1,5 @@
 package com.aviral.eaa1.Activity;
 
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -55,7 +54,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 
 public class PrivacyPolicy extends AppCompatActivity {
     private WebView webView;

@@ -5,8 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,21 +18,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.aviral.eaa1.Activity.MainActivity;
-import com.aviral.eaa1.Dialog.WonPriceClaimDialog;
-import com.aviral.eaa1.Fragments.EarnMoneyFragment;
 import com.aviral.eaa1.Fragments.OptionChances;
 import com.aviral.eaa1.Models.EarningOptions;
-import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.AdsParameters;
-import com.aviral.eaa1.Utils.ApiBackendProvider;
 import com.aviral.eaa1.Utils.Links;
 import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.Utils.TimeUtils;
@@ -59,13 +52,15 @@ public class OptionsRecyclerViewAdapter
 
     private final MainActivity mainActivity;
 
-    private static final String TAG_ADD = "AviralAds";
+    private static final String TAG_ADD = "AviralAdsOptionsAdapter";
     private final ArrayList<EarningOptions> optionList;
     private final Context context;
     private final FragmentManager fragmentManager;
     private final String uid;
     private final OptionChances chances;
     private final Activity activity;
+
+    private final Context applicationContext;
     public OptionsRecyclerViewAdapter(MainActivity mainActivity, Context context,
                                       FragmentManager fragmentManager,
                                       ArrayList<EarningOptions> optionList,
@@ -80,9 +75,7 @@ public class OptionsRecyclerViewAdapter
         this.uid = uid;
         this.chances = chances;
         this.activity = activity;
-
-        UnityAds.initialize(applicationContext,
-                AdsParameters.unityGameID, AdsParameters.testMode, this);
+        this.applicationContext = applicationContext;
 
     }
 
@@ -132,6 +125,9 @@ public class OptionsRecyclerViewAdapter
 
     @Override
     public void onBindViewHolder(@NonNull OptionsRecyclerViewAdapter.ViewHolder holder, int position) {
+
+        UnityAds.initialize(applicationContext,
+                AdsParameters.unityGameID, AdsParameters.testMode, this);
 
         setAnimation(holder.itemView, holder.itemView.getContext());
 
@@ -212,7 +208,7 @@ public class OptionsRecyclerViewAdapter
         Log.d(TAG_ADD, "onInitializationFailed: Ads Initialization failed " + message);
     }
 
-    private void decrementChances(String rewardName) {
+    private void decrementChances(String rewardName, int position) {
 
         Log.d(TAG, "decrementChances: Decrementing Chances");
 
@@ -254,6 +250,9 @@ public class OptionsRecyclerViewAdapter
                 dailyBonusEditor.apply();
 
                 Log.d(TAG, "decrementChances: dailyBonus chances--");
+
+                notifyItemChanged(position);
+
                 break;
 
             case "collectRewards":
@@ -293,6 +292,9 @@ public class OptionsRecyclerViewAdapter
                 collectRewardsEditor.apply();
 
                 Log.d(TAG, "decrementChances: collectRewards chances--");
+
+                notifyItemChanged(position);
+
                 break;
 
             case "watchVideos":
@@ -330,6 +332,9 @@ public class OptionsRecyclerViewAdapter
                 watchVideosEditor.apply();
 
                 Log.d(TAG, "decrementChances: watchRewards chances--");
+
+                notifyItemChanged(position);
+
                 break;
 
             case "goldPoints":
@@ -369,6 +374,9 @@ public class OptionsRecyclerViewAdapter
                 goldPointsEditor.apply();
 
                 Log.d(TAG, "decrementChances: goldPoints chances--");
+
+                notifyItemChanged(position);
+
                 break;
 
         }
@@ -519,10 +527,6 @@ public class OptionsRecyclerViewAdapter
         UnityAds.load(AdsParameters.rewardedAndroidAdUnitId, loadListener);
         UnityAds.show(activity, "Rewarded_Android", new UnityAdsShowOptions(), showListener);
 
-        decrementChances(optionList.get(position).getRewardName());
-
-        updateUserBalanceAndText(optionList.get(position).getOptionEarningAmount());
-
         Dialog dialog = new Dialog(activity);
         dialog.setContentView(R.layout.layout_won_price_dialog);
         dialog.setCanceledOnTouchOutside(false);
@@ -535,10 +539,16 @@ public class OptionsRecyclerViewAdapter
         earnedAmountText.setText(String.format("₹%s", optionList.get(position).getOptionEarningAmount()));
         ConstraintLayout wonPrice = dialog.findViewById(R.id.wonPrice);
         wonPrice.setOnClickListener(v -> {
+
+            decrementChances(optionList.get(position).getRewardName(), position);
+
             DisplayInterstitial();
+
             if (dialog.isShowing()){
                 dialog.dismiss();
             }
+
+            updateUserBalanceAndText(optionList.get(position).getOptionEarningAmount());
         });
     }
 

@@ -26,7 +26,6 @@ import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.aviral.eaa1.Activity.MainActivity;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.AdsParameters;
-import com.aviral.eaa1.Utils.ApiBackendProvider;
 import com.aviral.eaa1.Utils.Links;
 import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.databinding.FragmentSpinBinding;
@@ -52,7 +51,7 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
     }
     private Activity activity;
 
-    private static final String TAG = "AviralAds";
+    private static final String TAG = "AviralAdsSpin";
 
     public FragmentSpinBinding binding;
 
@@ -69,50 +68,12 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
 
     private LoadingDialog loadingDialog;
 
-    private ApiBackendProvider backendProvider;
-
     private double earnedAmount;
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        binding = FragmentSpinBinding.inflate(inflater, container, false);
-
-
-
-
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        activity = getActivity();
-        UnityAds.initialize(activity.getApplicationContext(),
-                AdsParameters.unityGameID, AdsParameters.testMode, this);
-
-        backendProvider = new ApiBackendProvider(requireContext());
-
-        loadingDialog = new LoadingDialog(requireContext());
-
-
-        getChances();
-
-        binding.btnSpin.setOnSlideCompleteListener(slideToActView -> startSpin());
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-
-    }
 
     private final IUnityAdsLoadListener loadListener = new IUnityAdsLoadListener() {
         @Override
         public void onUnityAdsAdLoaded(String placementId) {
-
+            UnityAds.show(requireActivity(), AdsParameters.rewardedAndroidAdUnitId, new UnityAdsShowOptions(), showListener);
         }
 
         @Override
@@ -154,15 +115,50 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
         Log.d(TAG, "onInitializationFailed: Ads Initialization failed " + message);
     }
 
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        binding = FragmentSpinBinding.inflate(inflater, container, false);
+
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        activity = getActivity();
+
+        if (activity != null && isAdded()) {
+
+            UnityAds.initialize(activity.getApplicationContext(),
+                    AdsParameters.unityGameID, AdsParameters.testMode, this);
+
+        }
+
+        loadingDialog = new LoadingDialog(requireContext());
+
+        getChances();
+
+        binding.btnSpin.setOnSlideCompleteListener(slideToActView -> startSpin());
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+
+    }
+
     private void getChances() {
         SharedPreferences chancesPreferences = requireContext().getSharedPreferences("spinChances", Context.MODE_PRIVATE);
-        chancesLeft = chancesPreferences.getInt("chancesLeft", 10);
+        chancesLeft = chancesPreferences.getInt("chancesLeft", 20);
 
         if (chancesLeft > 1) {
             binding.tvChances.setText(chancesLeft + " Chances Left");
         } else {
-            binding.tvChances.setText(chancesLeft + " Chance Left");
-        }
+            binding.tvChances.setText(chancesLeft + " Chance Left");        }
 
         loadingDialog.dismiss();
 
@@ -195,7 +191,7 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
                 RotateAnimation.RELATIVE_TO_SELF, 0.5f);
 
         rotateAnimation.setDuration(3600);
-//        rotateAnimation.setFillAfter(true);
+        rotateAnimation.setFillAfter(true);
 
         rotateAnimation.setInterpolator(new DecelerateInterpolator());
 
@@ -210,10 +206,6 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
                 earnedAmount = sectors[sectors.length - (randomSectorIndex + 1)];
 
                 DisplayRewardedAd();
-
-                binding.balance.setText(String.format("₹%s",
-                        roundOfNumber(Double.parseDouble(String.valueOf(mainActivity.getBalance()))
-                                + earnedAmount)));
 
             }
 
@@ -257,8 +249,6 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
         UnityAds.show(activity, "Rewarded_Android", new UnityAdsShowOptions(), showListener);
         decrementChances();
 
-        updateUserBalance(earnedAmount);
-
         Dialog dialog = new Dialog(activity);
         dialog.setContentView(R.layout.layout_won_price_dialog);
         dialog.setCanceledOnTouchOutside(false);
@@ -274,11 +264,17 @@ public class SpinFragment extends Fragment implements IUnityAdsInitializationLis
             if (dialog.isShowing()){
                 dialog.dismiss();
             }
+
+            binding.balance.setText(String.format("₹%s",
+                    roundOfNumber(Double.parseDouble(String.valueOf(mainActivity.getBalance()))
+                            + earnedAmount)));
             DisplayInterstitial();
 
             decrementChances();
 
             getChances();
+
+            updateUserBalance(earnedAmount);
 
             spinning = false;
 

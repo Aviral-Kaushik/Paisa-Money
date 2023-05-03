@@ -1,7 +1,5 @@
 package com.aviral.eaa1.Activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -9,11 +7,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.aviral.eaa1.Models.UserData;
-import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.Links;
 import com.aviral.eaa1.databinding.ActivityInviteBinding;
 import com.google.android.material.snackbar.Snackbar;

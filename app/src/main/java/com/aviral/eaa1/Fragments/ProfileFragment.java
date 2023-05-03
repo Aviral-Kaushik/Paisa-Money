@@ -3,15 +3,13 @@ package com.aviral.eaa1.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
-import android.os.Handler;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.aviral.eaa1.Activity.InviteActivity;
 import com.aviral.eaa1.Activity.MainActivity;
@@ -19,32 +17,25 @@ import com.aviral.eaa1.Activity.PrivacyPolicy;
 import com.aviral.eaa1.Activity.ReferralEarningActivity;
 import com.aviral.eaa1.Activity.TermsAndCondition;
 import com.aviral.eaa1.Activity.WithdrawActivity;
-import com.aviral.eaa1.Models.UserData;
-import com.aviral.eaa1.R;
-import com.aviral.eaa1.Utils.ApiBackendProvider;
-import com.aviral.eaa1.Utils.LoadingDialog;
 import com.aviral.eaa1.databinding.FragmentProfileBinding;
 
 
 public class ProfileFragment extends Fragment {
 
 
-    private MainActivity mainActivity;
+    private final MainActivity mainActivity;
 
     public ProfileFragment(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
     }
+
     public FragmentProfileBinding binding;
-
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         binding = FragmentProfileBinding.inflate(inflater, container, false);
-
-
 
         return binding.getRoot();
     }

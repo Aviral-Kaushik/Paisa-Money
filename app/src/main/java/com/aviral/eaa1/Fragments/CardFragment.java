@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +24,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.anupkumarpanwar.scratchview.ScratchView;
-
 import com.aviral.eaa1.Activity.MainActivity;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.AdsParameters;
@@ -45,7 +43,7 @@ import java.util.Locale;
 
 public class CardFragment extends Fragment implements IUnityAdsInitializationListener {
 
-    private static final String TAG = "AviralAds";
+    private static final String TAG = "AviralAdsCard";
 
     public ScratchViewBinding binding;
     private Activity activity;
@@ -106,13 +104,12 @@ public class CardFragment extends Fragment implements IUnityAdsInitializationLis
 
     @Override
     public void onInitializationComplete() {
-        UnityAds.load("Interstitial_Android", loadListener);
-        UnityAds.load("Rewarded_Android", loadListener);
+        Log.d(TAG, "onInitializationComplete: Ads Initialization Complete");
     }
 
     @Override
     public void onInitializationFailed(UnityAds.UnityAdsInitializationError error, String message) {
-
+        Log.d(TAG, "onInitializationFailed: Ads Initialization failed " + message);
     }
 
     public CardFragment(MainActivity mainActivity) {
@@ -237,7 +234,7 @@ public class CardFragment extends Fragment implements IUnityAdsInitializationLis
                 editor.apply();
                 SharedPreferences sharedPreferencesCLs = activity.getSharedPreferences("prefs", Context.MODE_PRIVATE);
                 int c = sharedPreferencesCLs.getInt("clsc", 0);
-                binding.chanceLeft.setText(chancesLeft + "Chances left");
+                binding.chanceLeft.setText(chancesLeft + " Chances left");
             }
         };
         countDownTimer.start();
@@ -290,7 +287,7 @@ public class CardFragment extends Fragment implements IUnityAdsInitializationLis
         millisLeft = sharedPreferences.getLong("millisLeftD", millisLeft);
         timeRunning = sharedPreferences.getBoolean("isTimeRunningD", false);
         chancesLeft = sharedPreferences.getInt("clsc", 20);
-        binding.chanceLeft.setText("CARD = " + chancesLeft);
+        binding.chanceLeft.setText(chancesLeft + " Chances left");
         if (timeRunning){
             endTime = sharedPreferences.getLong("endTimeD", endTime);
             millisLeft = endTime - System.currentTimeMillis();
@@ -298,7 +295,7 @@ public class CardFragment extends Fragment implements IUnityAdsInitializationLis
                 millisLeft = 0;
                 timeRunning = false;
                 chancesLeft = 20;
-                binding.chanceLeft.setText("CARD = 20");
+                binding.chanceLeft.setText("20 Chances left");
                 SharedPreferences sharedPreferencesCL = activity.getSharedPreferences("prefs", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferencesCL.edit();
                 editor.putInt("clsc", 75);

@@ -11,7 +11,6 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.Links;
 import com.aviral.eaa1.databinding.ActivityWithdrawBinding;
@@ -21,7 +20,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.DecimalFormat;
-import java.util.Locale;
 
 public class WithdrawActivity extends AppCompatActivity {
 

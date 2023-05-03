@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.aviral.eaa1.Models.UserData;
 import com.aviral.eaa1.Models.WithdrawRequest;
 import com.aviral.eaa1.R;
 import com.aviral.eaa1.Utils.ApiBackendProvider;
